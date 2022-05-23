@@ -18,11 +18,11 @@ public class Task extends StaticEntity {
         throw new ExecutionControl.NotImplementedException("Not Implemented");
     }
 
-    void push(Person person) throws ExecutionControl.NotImplementedException {
+    public void addConsumer(Person person) throws ExecutionControl.NotImplementedException {
         throw new ExecutionControl.NotImplementedException("Not Implemented");
     }
 
-    void pop() throws ExecutionControl.NotImplementedException {
+    public void addWorker(Person person) throws ExecutionControl.NotImplementedException {
         throw new ExecutionControl.NotImplementedException("Not Implemented");
     }
     @Override
