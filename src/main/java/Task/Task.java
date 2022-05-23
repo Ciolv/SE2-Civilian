@@ -10,6 +10,8 @@ public class Task {
     int duration;
     Person[] queue;
     Point position;
+    TaskType taskType;
+    TaskType[] applicableTaskTypes;
 
     boolean validateTask() throws ExecutionControl.NotImplementedException {
         throw new ExecutionControl.NotImplementedException("Not Implemented");

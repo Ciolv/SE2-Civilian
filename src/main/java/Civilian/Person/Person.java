@@ -1,6 +1,7 @@
 package Civilian.Person;
 
 import Task.Task;
+import Task.TaskType;
 import aas.model.communication.Message;
 import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulation.entity.Agent;
 import jdk.jshell.spi.ExecutionControl;
@@ -12,6 +13,7 @@ public class Person extends Agent {
     Point position;
     Characteristic[] characteristics;
     Task[] tasks;
+    protected TaskType[] taskTypes;
 
     void calculateMovement()throws ExecutionControl.NotImplementedException {
         throw new ExecutionControl.NotImplementedException("Not Implemented");
