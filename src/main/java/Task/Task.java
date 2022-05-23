@@ -1,11 +1,12 @@
 package Task;
 
 import Civilian.Person.Person;
+import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulation.entity.StaticEntity;
 import jdk.jshell.spi.ExecutionControl;
 
 import java.awt.*;
 
-public class Task {
+public class Task extends StaticEntity {
     String Name;
     int duration;
     Person[] queue;
@@ -23,5 +24,9 @@ public class Task {
 
     void pop() throws ExecutionControl.NotImplementedException {
         throw new ExecutionControl.NotImplementedException("Not Implemented");
+    }
+    @Override
+    public void pluginUpdate() {
+
     }
 }
