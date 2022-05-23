@@ -27,6 +27,11 @@ public class Task extends StaticEntity {
     public void addWorker(Person person) throws ExecutionControl.NotImplementedException {
         throw new ExecutionControl.NotImplementedException("Not Implemented");
     }
+
+    public TaskType getTaskType() {
+        return taskType;
+    }
+
     /**
      * Sorts the current queue so that that it starts with all consumers and lists producers at the end.
      *
