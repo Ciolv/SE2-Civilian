@@ -10,8 +10,6 @@ import jdk.jshell.spi.ExecutionControl;
 import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Queue;
 import java.util.stream.Stream;
 
 public class Person extends Agent {
