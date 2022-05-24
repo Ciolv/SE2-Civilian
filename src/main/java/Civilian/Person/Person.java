@@ -44,7 +44,7 @@ public class Person extends Agent {
             );
             // Finds the closest entity where task can be executed
             Task closestEntity = (Task)findClosestEntity(compatibleTasks.toArray((Entity[]::new)));
-            closestEntity.addConsumer(this);
+            closestEntity.enqueue(this);
             isEnqueued = true;
         } else  {
             remove();

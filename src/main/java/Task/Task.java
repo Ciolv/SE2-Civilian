@@ -21,12 +21,20 @@ public class Task extends StaticEntity {
         throw new ExecutionControl.NotImplementedException("Not Implemented");
     }
 
-    public void addConsumer(Person person) throws ExecutionControl.NotImplementedException {
-        throw new ExecutionControl.NotImplementedException("Not Implemented");
-    }
-
-    public void addWorker(Person person) throws ExecutionControl.NotImplementedException {
-        throw new ExecutionControl.NotImplementedException("Not Implemented");
+    /**
+     * Enqueue for the task, so that it can be performed later on.
+     * @param person
+     */
+    public void enqueue(Person person) {
+        // Only enqueue if the person has a {@link TaskType} that is the same as an applicable {@link TaskType}
+        // for this Task
+        if (Arrays.stream(applicableTaskTypes).anyMatch(tType -> Arrays.stream(
+                person.getTaskTypes()).anyMatch(personTaskType -> tType == personTaskType))
+        ) {
+            queue.add(person);
+        } else {
+            throw new RuntimeException("Person tried to enqueue for task that it is not allowed not perform");
+        }
     }
 
     public TaskType getTaskType() {
