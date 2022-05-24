@@ -17,9 +17,9 @@ public class Task extends StaticEntity {
     TaskType[] applicableTaskTypes;
 
     /**
-     * Validate whether a TaskType list contains any task type applicable for this task or not.
-     * @param taskTypes TaskTypes that should be validated for applicability.
-     * @return True if a TaskType matches with the applicable TaskTypes, False otherwise.
+     * Validate whether a {@link TaskType} list contains any task type applicable for this task or not.
+     * @param taskTypes {@link TaskType} list that should be validated for applicability.
+     * @return True if a {@link TaskType} matches with the applicable TaskTypes, False otherwise.
      */
     boolean taskIsApplicable(TaskType[] taskTypes) {
         return Arrays.stream(applicableTaskTypes).anyMatch(tType -> Arrays.stream(
