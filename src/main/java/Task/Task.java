@@ -5,13 +5,15 @@ import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulati
 
 import java.awt.*;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Dictionary;
 import java.util.List;
 import java.util.stream.Stream;
 
 public class Task extends StaticEntity {
     String Name;
     int duration;
-    List<Person> queue;
+    Dictionary<Person, Integer> queue;
     Point position;
     TaskType taskType;
     TaskType[] applicableTaskTypes;
@@ -33,7 +35,7 @@ public class Task extends StaticEntity {
     public void enqueue(Person person) {
         // Only enqueue if the person has an applicable {@link TaskType}.
         if (taskIsApplicable(person.getTaskTypes())) {
-            queue.add(person);
+            queue.put(person, 0);
         } else {
             throw new RuntimeException("Person tried to enqueue for task that it is not allowed not perform");
         }
@@ -68,7 +70,7 @@ public class Task extends StaticEntity {
      * Consumers are all entities in the queue, having the same {@link TaskType} as the Task.
      */
     private Stream<Person> getAllConsumers() {
-        return queue.stream().filter(
+        return Collections.list(queue.keys()).stream().filter(
                 q -> Arrays.asList(q.getTaskTypes()).contains(this.taskType)
         );
     }
@@ -82,7 +84,7 @@ public class Task extends StaticEntity {
         List<Person> consumers = getAllConsumers().toList();
 
         // All persons in the queue that are no consumers are producers.
-        return queue.stream().filter(
+        return Collections.list(queue.keys()).stream().filter(
                 q -> !consumers.contains(q)
         );
     }
@@ -94,6 +96,8 @@ public class Task extends StaticEntity {
      * of producers, not all consumers can be served.
      */
     public void run()  {
+        increaseRoundCounter();
+
         List<Person> consumers =  getAllConsumers().toList();
         Person[] producers = getAllProducers().toArray(Person[]::new);
 
@@ -103,12 +107,23 @@ public class Task extends StaticEntity {
             // Producer performs task of the consumer
             if (!consumers.isEmpty()) {
                 Person consumer = consumers.get(0);
-                consumer.taskCompleted(taskType);
+                consumer.taskCompleted(taskType, queue.get(consumer));
                 queue.remove(consumers.get(0));
             }
 
             // Whether the producer can perform a task for the consumer or not, it can only perform it in this round.
             queue.remove(producer);
+        }
+    }
+
+    /**
+     * Increases the round counter for each person in queue by one.
+     */
+    private void increaseRoundCounter() {
+        for (Person waitingPerson :
+                Collections.list(queue.keys())) {
+            int round = queue.get(waitingPerson);
+            queue.put(waitingPerson, round + 1);
         }
     }
 

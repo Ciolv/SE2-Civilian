@@ -78,10 +78,12 @@ public class Person extends Agent {
     }
 
     /**
+     *
      * Dequeues the finished task from the tasks list.
      * @param taskType Type of task that has been completed.
+     * @param executionTime Time in rounds that the execution needed.
      */
-    public void taskCompleted(TaskType taskType) {
+    public void taskCompleted(TaskType taskType, int executionTime) {
         // The task should only be removed, if it matches the task type at the top of the task queue.
         if (tasks.size() != 0
                 && taskType == tasks.get(0).getTaskType()) {
