@@ -82,10 +82,8 @@ public class Task extends StaticEntity {
      *
      * As many consumers as possible means, that if the number of consumers in the queue is higher than the number
      * of producers, not all consumers can be served.
-     *
-     * @throws ExecutionControl.NotImplementedException
      */
-    public void run() throws ExecutionControl.NotImplementedException {
+    public void run()  {
         List<Person> consumers =  getAllConsumers().toList();
         Person[] producers = getAllProducers().toArray(Person[]::new);
 
