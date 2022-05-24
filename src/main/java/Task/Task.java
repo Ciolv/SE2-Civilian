@@ -2,7 +2,6 @@ package Task;
 
 import Civilian.Person.Person;
 import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulation.entity.StaticEntity;
-import jdk.jshell.spi.ExecutionControl;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -17,8 +16,14 @@ public class Task extends StaticEntity {
     TaskType taskType;
     TaskType[] applicableTaskTypes;
 
-    boolean validateTask() throws ExecutionControl.NotImplementedException {
-        throw new ExecutionControl.NotImplementedException("Not Implemented");
+    /**
+     * Validate whether a TaskType list contains any task type applicable for this task or not.
+     * @param taskTypes TaskTypes that should be validated for applicability.
+     * @return True if a TaskType matches with the applicable TaskTypes, False otherwise.
+     */
+    boolean taskIsApplicable(TaskType[] taskTypes) {
+        return Arrays.stream(applicableTaskTypes).anyMatch(tType -> Arrays.stream(
+                taskTypes).anyMatch(personTaskType -> tType == personTaskType));
     }
 
     /**
@@ -26,11 +31,8 @@ public class Task extends StaticEntity {
      * @param person
      */
     public void enqueue(Person person) {
-        // Only enqueue if the person has a {@link TaskType} that is the same as an applicable {@link TaskType}
-        // for this Task
-        if (Arrays.stream(applicableTaskTypes).anyMatch(tType -> Arrays.stream(
-                person.getTaskTypes()).anyMatch(personTaskType -> tType == personTaskType))
-        ) {
+        // Only enqueue if the person has an applicable {@link TaskType}.
+        if (taskIsApplicable(person.getTaskTypes())) {
             queue.add(person);
         } else {
             throw new RuntimeException("Person tried to enqueue for task that it is not allowed not perform");
