@@ -41,6 +41,11 @@ public class Task extends StaticEntity {
         }
     }
 
+    /**
+     * Get the {@link TaskType} of the Task.
+     *
+     * Enqueued Persons with the same {@link TaskType} will be considered as persons, that can fulfill this task.
+     */
     public TaskType getTaskType() {
         return taskType;
     }
