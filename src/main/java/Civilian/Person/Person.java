@@ -76,6 +76,10 @@ public class Person extends Agent {
         throw new ExecutionControl.NotImplementedException("Not Implemented");
     }
 
+    public void taskCompleted(TaskType taskType) throws ExecutionControl.NotImplementedException {
+        throw new ExecutionControl.NotImplementedException("Not Implemented");
+    }
+
     @Override
     public void pluginUpdate() {
         // TODO: implement...
