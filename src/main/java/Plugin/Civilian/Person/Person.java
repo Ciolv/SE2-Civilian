@@ -90,6 +90,9 @@ public class Person extends Agent {
                 && taskType == tasks.get(0).getTaskType()) {
             tasks.remove(0);
         }
+
+        CivilianPlugin.logger.info(String.format("%s finished the task %s in %s rounds.",
+                this.getClass(), taskType.name(), executionTime));
     }
 
     @Override
