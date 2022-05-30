@@ -1,7 +1,8 @@
-package Civilian.Person;
+package Plugin.Civilian.Person;
 
-import Task.Task;
-import Task.TaskType;
+import Plugin.CivilianPlugin;
+import Plugin.Task.Task;
+import Plugin.Task.TaskType;
 import aas.model.communication.Message;
 import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulation.entity.Agent;
 import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulation.entity.Entity;
@@ -78,8 +79,8 @@ public class Person extends Agent {
     }
 
     /**
-     *
      * Dequeues the finished task from the tasks list.
+     *
      * @param taskType Type of task that has been completed.
      * @param executionTime Time in rounds that the execution needed.
      */
@@ -94,5 +95,22 @@ public class Person extends Agent {
     @Override
     public void pluginUpdate() {
         // TODO: implement...
+    }
+
+    /**
+     * Calculate the speed factor for a person.
+     * @return Arithmetic mean of all characteristics.
+     */
+    public double getSpeedFactor() {
+        double speed = 0;
+
+        for (Characteristic characteristic:
+        characteristics){
+            speed += characteristic.value;
+        }
+
+        speed = speed / characteristics.length;
+
+        return speed;
     }
 }

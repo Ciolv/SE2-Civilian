@@ -1,6 +1,6 @@
-package Civilian.Person;
+package Plugin.Civilian.Person;
 
-import Task.TaskType;
+import Plugin.Task.TaskType;
 
 public class TerminalWorker extends Person{
     private TaskType[] taskTypes = new TaskType[] {

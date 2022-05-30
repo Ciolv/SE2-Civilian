@@ -1,6 +1,6 @@
-package Task;
+package Plugin.Task;
 
-import Civilian.Person.Person;
+import Plugin.Civilian.Person.Person;
 import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulation.entity.StaticEntity;
 
 import java.awt.*;
@@ -112,8 +112,12 @@ public class Task extends StaticEntity {
             // Producer performs task of the consumer
             if (!consumers.isEmpty()) {
                 Person consumer = consumers.get(0);
-                consumer.taskCompleted(taskType, queue.get(consumer));
-                queue.remove(consumers.get(0));
+
+                // Task is completed, when a person has exceeded its minimum task duration
+                if (consumer.getSpeedFactor() * duration <= queue.get(consumer)) {
+                    consumer.taskCompleted(taskType, queue.get(consumer));
+                    queue.remove(consumers.get(0));
+                }
             }
 
             // Whether the producer can perform a task for the consumer or not, it can only perform it in this round.

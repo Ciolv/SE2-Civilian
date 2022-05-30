@@ -1,4 +1,4 @@
-package Task;
+package Plugin.Task;
 
 public enum TaskType {
     WALKING, CLEANING, TRANSPORTING_LUGGAGE, BUY_TICKET, SELL_TICKET, ASK_FOR_DIRECTION, TELL_DIRECTION

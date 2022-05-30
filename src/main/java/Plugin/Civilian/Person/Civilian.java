@@ -1,6 +1,6 @@
-package Civilian.Person;
+package Plugin.Civilian.Person;
 
-import Task.TaskType;
+import Plugin.Task.TaskType;
 import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulation.entity.Entity;
 import jdk.jshell.spi.ExecutionControl;
 

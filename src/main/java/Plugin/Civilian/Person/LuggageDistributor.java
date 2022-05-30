@@ -1,8 +1,8 @@
-package Civilian.Person;
+package Plugin.Civilian.Person;
 
-import Task.TaskType;
+import Plugin.Task.TaskType;
 
-public class Loader extends Person {
+public class LuggageDistributor extends Person {
     private TaskType[] taskTypes = new TaskType[] {
             TaskType.WALKING,
             TaskType.TRANSPORTING_LUGGAGE
