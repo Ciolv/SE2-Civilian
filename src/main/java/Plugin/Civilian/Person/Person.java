@@ -1,11 +1,12 @@
 package Plugin.Civilian.Person;
 
 import Plugin.CivilianPlugin;
+import Plugin.Task.CompletionTaskMessage;
 import Plugin.Task.Task;
 import Plugin.Task.TaskType;
-import aas.model.communication.Message;
 import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulation.entity.Agent;
 import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulation.entity.Entity;
+import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulation.message.Message;
 import jdk.jshell.spi.ExecutionControl;
 
 import java.awt.*;
@@ -43,7 +44,8 @@ public class Person extends Agent {
             );
             // Finds the closest entity where task can be executed
             Task closestEntity = (Task)findClosestEntity(compatibleTasks.toArray((Entity[]::new)));
-            closestEntity.enqueue(this);
+//            closestEntity.enqueue(this);
+            //TODO: Message verwenden
             isEnqueued = true;
         } else  {
             remove();
@@ -96,6 +98,20 @@ public class Person extends Agent {
     }
 
     @Override
+    public void receiveMessage(Message m) {
+        if (m instanceof CompletionTaskMessage) {
+            TaskType completedTask = ((CompletionTaskMessage) m).getCompletedTask();
+            if (completedTask == tasks.get(0).getTaskType()) {
+                tasks.remove(0);
+
+                CivilianPlugin.logger.info(String.format("%s finished the task %s in %s rounds, default rounds would be %s.",
+                        this.getClass(), completedTask.name(), ((CompletionTaskMessage)m).getExecutionTime(),
+                        ((CompletionTaskMessage)m).getIndividualDuration()));
+            }
+        }
+    }
+
+    @Override
     public void pluginUpdate() {
         // TODO: implement...
     }
@@ -116,4 +132,6 @@ public class Person extends Agent {
 
         return speed;
     }
+
+
 }
