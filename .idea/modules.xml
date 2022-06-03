@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../AirportAgentSimulation-Base/AirportAgentSimulation-Base.iml" filepath="$PROJECT_DIR$/../AirportAgentSimulation-Base/AirportAgentSimulation-Base.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SE2-Civilian.iml" filepath="$PROJECT_DIR$/SE2-Civilian.iml" />
     </modules>
   </component>
 </project>

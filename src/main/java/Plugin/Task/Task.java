@@ -136,6 +136,11 @@ public class Task extends StaticEntity {
         }
     }
 
+    public void luggageCheckIn(double pSpeed, ){
+
+
+    }
+
     @Override
     public void pluginUpdate() {
 

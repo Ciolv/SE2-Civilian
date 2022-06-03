@@ -6,10 +6,10 @@ import Plugin.Task.TaskType;
 import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulation.entity.Agent;
 import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulation.entity.Entity;
 import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulation.message.Message;
+import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.geometry.Point;
 import jdk.jshell.spi.ExecutionControl;
 
 import java.util.ArrayList;
-import java.awt.Point;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
@@ -66,19 +66,29 @@ public class Person extends Agent {
     Entity findClosestEntity(Entity[] entities) throws ExecutionControl.NotImplementedException {
         double x = position.getX();
         int y = (int) position.getY();
+        int maxDist = 0;
         // String name ;
-        double entfernung = 10000;
+        int height = getWorld().getHeight();
+        int width = getWorld().getWidth();
+        if (width<height){
+            maxDist= height;
+        }
+        else{
+            maxDist=width;
+        }
+
+        double entfernung = maxDist;
         double entfRechnung;
         Entity erg = null;
-        ArrayList<Person> foundEntities= new ArrayList(getWorld().getEntities(x, y, 50.0));
+        ArrayList<Person> foundEntities= new ArrayList(getWorld().getEntities(x, y, maxDist));
         int p;
         p = foundEntities.size();
-        if (foundEntities != null){
+        if (p != 0){
             for (int i=0; i<p;i++){
                 //int[] [] pos = new int[] [];
                 ArrayList<Point> pos = new ArrayList();
                 Person pPerson = foundEntities.get(i);
-                dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.geometry.Point pos1= pPerson.getPosition();
+                Point pos1= pPerson.getPosition();
                 int xE = pos1.getX();
                 int yE = pos1.getY();
                 //int insgX = xE - x;
