@@ -3,17 +3,18 @@ package Plugin.Civilian.Person;
 import Plugin.CivilianPlugin;
 import Plugin.Task.Task;
 import Plugin.Task.TaskType;
-import aas.model.communication.Message;
 import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulation.entity.Agent;
 import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulation.entity.Entity;
+import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulation.message.Message;
 import jdk.jshell.spi.ExecutionControl;
 
-import javax.xml.stream.events.Characters;
-import java.awt.*;
+import java.util.ArrayList;
+import java.awt.Point;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Stream;
+
+import static java.lang.Math.sqrt;
 
 public class Person extends Agent {
 
@@ -58,40 +59,38 @@ public class Person extends Agent {
         speed = pSpeed;
     }
 
-    double getSpeed() {
+    public double getSpeedy() {
         return speed;
     }
 
-
     Entity findClosestEntity(Entity[] entities) throws ExecutionControl.NotImplementedException {
-        boolean entitiesThere;
-        int x = getX();
-        int y = getY();
-        string Name ;
-        double entfernung;
+        double x = position.getX();
+        int y = (int) position.getY();
+        // String name ;
+        double entfernung = 10000;
         double entfRechnung;
-        Entity erg;
-        ArrayList<String> foundEntities= new ArrayList(getEnteties(x, y, 50));
+        Entity erg = null;
+        ArrayList<Person> foundEntities= new ArrayList(getWorld().getEntities(x, y, 50.0));
         int p;
         p = foundEntities.size();
         if (foundEntities != null){
-            for (int i=0; i<10;i++){
+            for (int i=0; i<p;i++){
                 //int[] [] pos = new int[] [];
-                int[] pos = new int[];
-                pos[i] = Arraylist.get(i).getPosition;
-                int xE = pos[i] [0];
-                int yE = pos[i] [1];
+                ArrayList<Point> pos = new ArrayList();
+                Person pPerson = foundEntities.get(i);
+                dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.geometry.Point pos1= pPerson.getPosition();
+                int xE = pos1.getX();
+                int yE = pos1.getY();
                 //int insgX = xE - x;
                 //int insgY = yE - y;
                 entfRechnung=sqrt(Math.pow(x-xE, 2)+Math.pow(y-yE, 2));
                 if(entfRechnung < entfernung) {
                     entfernung = entfRechnung;
-                    erg = foundEntities[i].name;
+                    erg = foundEntities.get(i);
                 }
             }
         }
         else{
-            entitiesThere = False;
             erg = null;
         }
         return erg;
