@@ -136,7 +136,7 @@ public class Task extends StaticEntity {
         }
     }
 
-    public void luggageCheckIn(double pSpeed, ){
+    public void luggageCheckIn(double pSpeed ){
 
 
     }
