@@ -2,7 +2,6 @@ package Plugin.Task;
 
 import Plugin.Civilian.Person.Person;
 import Plugin.CivilianPlugin;
-import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulation.World;
 import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulation.entity.StaticEntity;
 import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulation.message.Message;
 
@@ -10,7 +9,6 @@ import java.awt.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Dictionary;
-import java.util.List;
 import java.util.stream.Stream;
 
 public class Task extends StaticEntity {
@@ -33,42 +31,22 @@ public class Task extends StaticEntity {
 
     @Override
     public void receiveMessage(Message m) {
-        switch (taskType) {
-            case SELL_TICKET, BUY_TICKET -> {
-                if (m instanceof BuyTicketTaskMessage ||
-                m instanceof SellTicketTaskMessage) {
-                    enqueue((TaskMessage) m);
-                }
-                break;
-            }
-            case ASK_FOR_DIRECTION, TELL_DIRECTION -> {
-                if (m instanceof TellDirectionTaskMessage ||
-                        m instanceof AskForDirectionTaskMessage) {
-                    enqueue((TaskMessage) m);
-                }
-                break;
-            }
-            case CLEANING -> {
-                if (m instanceof CleaningTaskMessage) {
-                    enqueue((TaskMessage) m);
-                }
-                break;
-            }
-            case TRANSPORTING_LUGGAGE -> {
-                if (m instanceof TransportLuggageTaskMessage) {
-                    enqueue((TaskMessage) m);
-                }
-                break;
-            }
-            default -> {
+        if (m instanceof TaskMessage) {
+            if (((TaskMessage)m).getTaskToComplete() == taskType ||
+                    ((TaskMessage)m).getTaskToPerform() == taskType) {
+                enqueue((TaskMessage) m);
+            } else {
                 CivilianPlugin.logger.error(
                         String.format("%s cannot be served at this task. Valid TaskTypes are %s",
-                                ((TaskMessage)m).getTaskToComplete().name(),
+                                ((TaskMessage) m).getTaskToComplete().name(),
                                 applicableTaskTypes.toString()
                         )
                 );
-                break;
             }
+        } else {
+            CivilianPlugin.logger.error(
+                    String.format("'%s' can not be performed at this %s", m.toString(), this.getClass())
+            );
         }
     }
 
@@ -135,53 +113,45 @@ public class Task extends StaticEntity {
         return consumerMessages.map(taskMessage -> (Person)taskMessage.getOrigin());
     }
 
-    /**
-     * Performs task execution for all producers and as many consumers as possible.
-     *
-     * As many consumers as possible means, that if the number of consumers in the queue is higher than the number
-     * of producers, not all consumers can be served.
-     */
-    public void run()  {
-        increaseRoundCounter();
+    private void performSelfServingTask(TaskMessage message) {
+        TaskTimer taskTimer = queue.get(message);
+        taskTimer.decreaseDuration();
 
-        for (TaskMessage message : Collections.list(queue.keys())) {
+        if (taskTimer.durationExceeded()) {
+            getWorld().sendMessage(new CompletionTaskMessage(message.getTarget(),
+                    message.getOrigin(),
+                    message.getTaskToPerform(),
+                    taskTimer.getWaitingTime(),
+                    taskTimer.getIndividualDuration()));
 
-            TaskTimer taskTimer = queue.get(message);
-            taskTimer.decreaseDuration();
+            queue.remove(message);
+        }
+    }
 
-            if (message.getTaskToComplete() == message.getTaskToPerform()) {
-                if (taskTimer.durationExceeded()) {
-                    getWorld().sendMessage(new CompletionTaskMessage(message.getTarget(),
-                            message.getOrigin(),
-                            message.getTaskToPerform(),
-                            taskTimer.getWaitingTime(),
-                            taskTimer.getIndividualDuration()));
+    private void performNonSelfServingTask(TaskMessage message) {
+        TaskTimer taskTimer = queue.get(message);
+        taskTimer.decreaseDuration();
 
-                    queue.remove(message);
-                }
-            } else {
-                Stream<TaskMessage> partnerMessageStream = Collections.list(queue.keys()).stream().filter(
-                        taskMessage -> taskMessage.getTaskToPerform() == message.getTaskToComplete()
-                ).limit(1);
+        Stream<TaskMessage> partnerMessageStream = Collections.list(queue.keys()).stream().filter(
+                taskMessage -> taskMessage.getTaskToPerform() == message.getTaskToComplete()
+        ).limit(1);
 
-                if (partnerMessageStream.count() > 0) {
-                    TaskMessage partnerMessage = partnerMessageStream.findFirst().get();
-                    if (taskTimer.durationExceeded()) {
-                        getWorld().sendMessage(new CompletionTaskMessage(message.getTarget(),
-                                message.getOrigin(),
-                                message.getTaskToPerform(),
-                                taskTimer.getWaitingTime(),
-                                taskTimer.getIndividualDuration()));
-                        getWorld().sendMessage(new CompletionTaskMessage(partnerMessage.getTarget(),
-                                partnerMessage.getOrigin(),
-                                partnerMessage.getTaskToPerform(),
-                                taskTimer.getWaitingTime(),
-                                taskTimer.getIndividualDuration()));
+        if (partnerMessageStream.count() > 0) {
+            TaskMessage partnerMessage = partnerMessageStream.findFirst().get();
+            if (taskTimer.durationExceeded()) {
+                getWorld().sendMessage(new CompletionTaskMessage(message.getTarget(),
+                        message.getOrigin(),
+                        message.getTaskToPerform(),
+                        taskTimer.getWaitingTime(),
+                        taskTimer.getIndividualDuration()));
+                getWorld().sendMessage(new CompletionTaskMessage(partnerMessage.getTarget(),
+                        partnerMessage.getOrigin(),
+                        partnerMessage.getTaskToPerform(),
+                        taskTimer.getWaitingTime(),
+                        taskTimer.getIndividualDuration()));
 
-                        queue.remove(message);
-                        queue.remove(partnerMessage);
-                    }
-                }
+                queue.remove(message);
+                queue.remove(partnerMessage);
             }
         }
     }
@@ -197,8 +167,23 @@ public class Task extends StaticEntity {
         }
     }
 
+    /**
+     * Performs task execution for all producers and as many consumers as possible.
+     *
+     * As many consumers as possible means, that if the number of consumers in the queue is higher than the number
+     * of producers, not all consumers can be served.
+     */
     @Override
     public void pluginUpdate() {
+        increaseRoundCounter();
 
+        for (TaskMessage message : Collections.list(queue.keys())) {
+
+            if (message.getTaskToComplete() == message.getTaskToPerform()) {
+                performSelfServingTask(message);
+            } else {
+                performNonSelfServingTask(message);
+            }
+        }
     }
 }

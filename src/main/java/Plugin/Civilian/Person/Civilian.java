@@ -16,5 +16,6 @@ public class Civilian extends Person {
 
     Entity findNextEntity(String entityID) throws ExecutionControl.NotImplementedException {
         throw new ExecutionControl.NotImplementedException("Not Implemented");
+
     }
 }
