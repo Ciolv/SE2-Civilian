@@ -12,6 +12,10 @@ public enum Characteristic {
     private Characteristic(double value){
         this.value=value;
     }
+
+    public double getValue() {
+        return value;
+    }
 }
 
 
