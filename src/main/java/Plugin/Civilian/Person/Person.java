@@ -29,21 +29,29 @@ public class Person extends Agent {
 
     /**
      * If a matching task is present and near, the method executes it.
-     *
-     * @throws ExecutionControl.NotImplementedException
      */
-    void runTask() throws ExecutionControl.NotImplementedException {
+    @Override
+    public void pluginUpdate() {
         if (isEnqueued) {
             return;
         }
 
         if (tasks.size() > 0) {
             // Select near tasks that match to first assigned task
-            Stream<Task> compatibleTasks = Arrays.stream(findNearTasks()).filter(
-                    t -> t.getTaskType() == tasks.get(0).getTaskType()
-            );
+            Stream<Task> compatibleTasks = null;
+            try {
+                compatibleTasks = Arrays.stream(findNearTasks()).filter(
+                        t -> t.getTaskType() == tasks.get(0).getTaskType()
+                );
+            } catch (ExecutionControl.NotImplementedException e) {
+                throw new RuntimeException(e);
+            }
             // Finds the closest entity where task can be executed
-            Task closestEntity = (Task)findClosestEntity(compatibleTasks.toArray((Entity[]::new)));
+            try {
+                Task closestEntity = (Task)findClosestEntity(compatibleTasks.toArray((Entity[]::new)));
+            } catch (ExecutionControl.NotImplementedException e) {
+                throw new RuntimeException(e);
+            }
 //            closestEntity.enqueue(this);
             //TODO: Message verwenden
             isEnqueued = true;
@@ -56,8 +64,8 @@ public class Person extends Agent {
         throw new ExecutionControl.NotImplementedException("Not Implemented");
     }
 
-    void remove() throws ExecutionControl.NotImplementedException {
-        throw new ExecutionControl.NotImplementedException("Not Implemented");
+    void remove() {
+        kill();
     }
 
     void handleMessage(Message message) throws ExecutionControl.NotImplementedException {
@@ -110,12 +118,7 @@ public class Person extends Agent {
             }
         }
     }
-
-    @Override
-    public void pluginUpdate() {
-        // TODO: implement...
-    }
-
+    
     /**
      * Calculate the speed factor for a person.
      * @return Arithmetic mean of all characteristics.

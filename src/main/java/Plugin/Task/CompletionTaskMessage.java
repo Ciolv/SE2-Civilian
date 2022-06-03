@@ -54,7 +54,6 @@ public class CompletionTaskMessage implements DirectedMessage, LocalMessage {
     @Override
     public void fromString(String s) {
         // Laaa leee luuu nur der Mann im Mond schaut zu 😅
-
     }
 
     public int getExecutionTime() {
