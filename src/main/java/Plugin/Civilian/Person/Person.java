@@ -1,6 +1,7 @@
 package Plugin.Civilian.Person;
 
 import Plugin.CivilianPlugin;
+import Plugin.Task.CompletionTaskMessage;
 import Plugin.Task.Task;
 import Plugin.Task.TaskType;
 import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulation.entity.Agent;
@@ -29,22 +30,31 @@ public class Person extends Agent {
 
     /**
      * If a matching task is present and near, the method executes it.
-     *
-     * @throws ExecutionControl.NotImplementedException
      */
-    void runTask() throws ExecutionControl.NotImplementedException {
+    @Override
+    public void pluginUpdate() {
         if (isEnqueued) {
             return;
         }
 
         if (tasks.size() > 0) {
             // Select near tasks that match to first assigned task
-            Stream<Task> compatibleTasks = Arrays.stream(findNearTasks()).filter(
-                    t -> t.getTaskType() == tasks.get(0).getTaskType()
-            );
+            Stream<Task> compatibleTasks = null;
+            try {
+                compatibleTasks = Arrays.stream(findNearTasks()).filter(
+                        t -> t.getTaskType() == tasks.get(0).getTaskType()
+                );
+            } catch (ExecutionControl.NotImplementedException e) {
+                throw new RuntimeException(e);
+            }
             // Finds the closest entity where task can be executed
-            Task closestEntity = (Task)findClosestEntity(compatibleTasks.toArray((Entity[]::new)));
-            closestEntity.enqueue(this);
+            try {
+                Task closestEntity = (Task)findClosestEntity(compatibleTasks.toArray((Entity[]::new)));
+            } catch (ExecutionControl.NotImplementedException e) {
+                throw new RuntimeException(e);
+            }
+//            closestEntity.enqueue(this);
+            //TODO: Message verwenden
             isEnqueued = true;
         } else  {
             remove();
@@ -110,8 +120,8 @@ public class Person extends Agent {
         throw new ExecutionControl.NotImplementedException("Not Implemented");
     }
 
-    void remove() throws ExecutionControl.NotImplementedException {
-        throw new ExecutionControl.NotImplementedException("Not Implemented");
+    void remove() {
+        kill();
     }
 
     void handleMessage(Message message) throws ExecutionControl.NotImplementedException {
@@ -149,10 +159,19 @@ public class Person extends Agent {
     }
 
     @Override
-    public void pluginUpdate() {
-        // TODO: implement...
-    }
+    public void receiveMessage(Message m) {
+        if (m instanceof CompletionTaskMessage) {
+            TaskType completedTask = ((CompletionTaskMessage) m).getCompletedTask();
+            if (completedTask == tasks.get(0).getTaskType()) {
+                tasks.remove(0);
 
+                CivilianPlugin.logger.info(String.format("%s finished the task %s in %s rounds, default rounds would be %s.",
+                        this.getClass(), completedTask.name(), ((CompletionTaskMessage)m).getExecutionTime(),
+                        ((CompletionTaskMessage)m).getIndividualDuration()));
+            }
+        }
+    }
+    
     /**
      * Calculate the speed factor for a person.
      * @return Arithmetic mean of all characteristics.
@@ -169,4 +188,6 @@ public class Person extends Agent {
 
         return speed;
     }
+
+
 }

@@ -1,19 +1,20 @@
 package Plugin.Task;
 
 import Plugin.Civilian.Person.Person;
+import Plugin.CivilianPlugin;
 import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulation.entity.StaticEntity;
+import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulation.message.Message;
 
 import java.awt.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Dictionary;
-import java.util.List;
 import java.util.stream.Stream;
 
 public class Task extends StaticEntity {
     String Name;
     int duration;
-    Dictionary<Person, Integer> queue;
+    Dictionary<TaskMessage, TaskTimer> queue;
     Point position;
     TaskType taskType;
     TaskType[] applicableTaskTypes;
@@ -28,17 +29,34 @@ public class Task extends StaticEntity {
                 taskTypes).anyMatch(personTaskType -> tType == personTaskType));
     }
 
+    @Override
+    public void receiveMessage(Message m) {
+        if (m instanceof TaskMessage) {
+            if (((TaskMessage)m).getTaskToComplete() == taskType ||
+                    ((TaskMessage)m).getTaskToPerform() == taskType) {
+                enqueue((TaskMessage) m);
+            } else {
+                CivilianPlugin.logger.error(
+                        String.format("%s cannot be served at this task. Valid TaskTypes are %s",
+                                ((TaskMessage) m).getTaskToComplete().name(),
+                                applicableTaskTypes.toString()
+                        )
+                );
+            }
+        } else {
+            CivilianPlugin.logger.error(
+                    String.format("'%s' can not be performed at this %s", m.toString(), this.getClass())
+            );
+        }
+    }
+
     /**
      * Enqueue for the task, so that it can be performed later on.
-     * @param person
+     * @param message
      */
-    public void enqueue(Person person) {
+    private void enqueue(TaskMessage message) {
         // Only enqueue if the person has an applicable {@link TaskType}.
-        if (taskIsApplicable(person.getTaskTypes())) {
-            queue.put(person, 0);
-        } else {
-            throw new RuntimeException("Person tried to enqueue for task that it is not allowed not perform");
-        }
+            queue.put(message, new TaskTimer(duration, ((Person)message.getOrigin()).getSpeedFactor()));
     }
 
     /**
@@ -75,9 +93,11 @@ public class Task extends StaticEntity {
      * Consumers are all entities in the queue, having the same {@link TaskType} as the Task.
      */
     private Stream<Person> getAllConsumers() {
-        return Collections.list(queue.keys()).stream().filter(
-                q -> Arrays.asList(q.getTaskTypes()).contains(this.taskType)
+        Stream<TaskMessage> consumerMessages = Collections.list(queue.keys()).stream().filter(
+                q -> Arrays.asList(q.getTaskToComplete()).equals(this.taskType)
         );
+
+        return consumerMessages.map(taskMessage -> (Person)taskMessage.getOrigin());
     }
 
     /**
@@ -86,45 +106,68 @@ public class Task extends StaticEntity {
      * Consumers are all entities in the queue, having the same {@link TaskType} as the Task.
      */
     private Stream<Person> getAllProducers() {
-        List<Person> consumers = getAllConsumers().toList();
-
-        // All persons in the queue that are no consumers are producers.
-        return Collections.list(queue.keys()).stream().filter(
-                q -> !consumers.contains(q)
+        Stream<TaskMessage> consumerMessages = Collections.list(queue.keys()).stream().filter(
+                q -> !Arrays.asList(q.getTaskToComplete()).equals(this.taskType)
         );
+
+        return consumerMessages.map(taskMessage -> (Person)taskMessage.getOrigin());
     }
 
-    /**
-     * Performs task execution for all producers and as many consumers as possible.
-     *
-     * As many consumers as possible means, that if the number of consumers in the queue is higher than the number
-     * of producers, not all consumers can be served.
-     */
-    public void run()  {
-        increaseRoundCounter();
+    private void performSelfServingTask(TaskMessage message) {
+        TaskTimer taskTimer = queue.get(message);
+        taskTimer.decreaseDuration();
 
-        List<Person> consumers =  getAllConsumers().toList();
-        Person[] producers = getAllProducers().toArray(Person[]::new);
+        if (taskTimer.durationExceeded()) {
+            getWorld().sendMessage(new CompletionTaskMessage(message.getTarget(),
+                    message.getOrigin(),
+                    message.getTaskToPerform(),
+                    taskTimer.getWaitingTime(),
+                    taskTimer.getIndividualDuration()));
 
-        for (Person producer:
-             producers) {
-
-            // Producer performs task of the consumer
-            if (!consumers.isEmpty()) {
-                Person consumer = consumers.get(0);
-
-                // Task is completed, when a person has exceeded its minimum task duration
-                if (consumer.getSpeedFactor() * duration <= queue.get(consumer)) {
-                    consumer.taskCompleted(taskType, queue.get(consumer));
-                    queue.remove(consumers.get(0));
-                }
-            }
-
-            // Whether the producer can perform a task for the consumer or not, it can only perform it in this round.
-            queue.remove(producer);
+            queue.remove(message);
         }
     }
 
+    private void performNonSelfServingTask(TaskMessage message) {
+        TaskTimer taskTimer = queue.get(message);
+        taskTimer.decreaseDuration();
+
+        Stream<TaskMessage> partnerMessageStream = Collections.list(queue.keys()).stream().filter(
+                taskMessage -> taskMessage.getTaskToPerform() == message.getTaskToComplete()
+        ).limit(1);
+
+        if (partnerMessageStream.count() > 0) {
+            TaskMessage partnerMessage = partnerMessageStream.findFirst().get();
+            if (taskTimer.durationExceeded()) {
+                getWorld().sendMessage(new CompletionTaskMessage(message.getTarget(),
+                        message.getOrigin(),
+                        message.getTaskToPerform(),
+                        taskTimer.getWaitingTime(),
+                        taskTimer.getIndividualDuration()));
+                getWorld().sendMessage(new CompletionTaskMessage(partnerMessage.getTarget(),
+                        partnerMessage.getOrigin(),
+                        partnerMessage.getTaskToPerform(),
+                        taskTimer.getWaitingTime(),
+                        taskTimer.getIndividualDuration()));
+
+                queue.remove(message);
+                queue.remove(partnerMessage);
+            }
+        }
+    }
+
+    /**
+     * Increases the round counter for each person in queue by one.
+     */
+    private void increaseRoundCounter() {
+        for (TaskMessage enqueuedMessage :
+                Collections.list(queue.keys())) {
+            TaskTimer taskTimer = queue.get(enqueuedMessage);
+            taskTimer.increaseWaitingTime();
+        }
+    }
+
+    
     /**
      * Increases the round counter for each person in queue by one.
      */
@@ -141,8 +184,24 @@ public class Task extends StaticEntity {
 
     }
 
+    /**
+     * Performs task execution for all producers and as many consumers as possible.
+     *
+     * As many consumers as possible means, that if the number of consumers in the queue is higher than the number
+     * of producers, not all consumers can be served.
+     */
+
     @Override
     public void pluginUpdate() {
+        increaseRoundCounter();
 
+        for (TaskMessage message : Collections.list(queue.keys())) {
+
+            if (message.getTaskToComplete() == message.getTaskToPerform()) {
+                performSelfServingTask(message);
+            } else {
+                performNonSelfServingTask(message);
+            }
+        }
     }
 }
