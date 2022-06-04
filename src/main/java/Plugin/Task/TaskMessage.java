@@ -41,10 +41,10 @@ public class TaskMessage implements LocalMessage, DirectedMessage {
         return messages;
     }
 
-    public TaskType getTaskToComplete() {
+    public static TaskType getTaskToComplete() {
         return taskToComplete;
     }
-    public  TaskType getTaskToPerform() {
+    public static TaskType getTaskToPerform() {
         return taskToPerform;
     }
 

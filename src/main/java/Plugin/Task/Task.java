@@ -179,8 +179,11 @@ public class Task extends StaticEntity {
         }
     }
 
-    public void transporting_luggage(double pSpeed ){
-
+    public void transporting_luggage(double pSpeed, TaskTimer timer ){
+        TaskMessage taskMessager = queue.get(timer);
+        TaskType[] toDo = TaskMessage.getTaskToComplete();
+        taskIsApplicable(TaskMessage.getTaskToComplete()) ;
+        TaskMessage.getTaskToPerform() = message;
     }
 
     public void walking(double pSpeed ){
