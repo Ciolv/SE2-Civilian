@@ -149,7 +149,6 @@ public class Person extends Agent {
                TaskMessage pMessage =  new TaskMessage(this, z);
                 Task.performNonSelfServingTask(pMessage);
             }
-
         }
         else if (p.getTaskType() == TaskType.BUY_TICKET){
             findClosestEntityForTask(ent, TaskType.SELL_TICKET);
@@ -165,6 +164,7 @@ public class Person extends Agent {
         }
         else if (p.getTaskType() == TaskType.TRANSPORTING_LUGGAGE){
             //findClosestEntityForTask(ent, TaskType.);
+
         }
         else{
             //p.getTaskType() == TaskType.WALKING

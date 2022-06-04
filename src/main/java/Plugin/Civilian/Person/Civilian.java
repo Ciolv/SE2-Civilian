@@ -18,4 +18,16 @@ public class Civilian extends Person {
         throw new ExecutionControl.NotImplementedException("Not Implemented");
 
     }
+
+
+    boolean getHasLuggae(){
+        double rand = Math.random()*(0-1);
+        int bool= (int) Math.round(rand);
+        if(bool== 1){
+            hasLuggage= true;
+        }else {
+            hasLuggage= false;
+        }
+        return hasLuggage;
+    }
 }
