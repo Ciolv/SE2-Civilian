@@ -151,20 +151,41 @@ public class Person extends Agent {
             }
         }
         else if (p.getTaskType() == TaskType.BUY_TICKET){
-            findClosestEntityForTask(ent, TaskType.SELL_TICKET);
+            Entity z = findClosestEntityForTask(ent, TaskType.SELL_TICKET);
+            z.turn(z.position);
+            if(this.position == z.position){
+                TaskMessage pMessage =  new TaskMessage(this, z);
+                Task.performNonSelfServingTask(pMessage);
+            }
         }
         else if (p.getTaskType() == TaskType.SELL_TICKET){
-            findClosestEntityForTask(ent, TaskType.BUY_TICKET);
+            Entity z = findClosestEntityForTask(ent, TaskType.BUY_TICKET);
+            z.turn(z.position);
+            if(this.position == z.position){
+                TaskMessage pMessage =  new TaskMessage(this, z);
+                Task.performNonSelfServingTask(pMessage);
+            }
         }
         else if (p.getTaskType() == TaskType.WALKING){
-            findClosestEntityForTask(ent, TaskType.TELL_DIRECTION);
+            Entity z = findClosestEntityForTask(ent, TaskType.TELL_DIRECTION);
+            z.turn(z.position);
+            if(this.position == z.position){
+                TaskMessage pMessage =  new TaskMessage(this, z);
+                Task.performNonSelfServingTask(pMessage);
+            }
         }
         else if (p.getTaskType() == TaskType.TELL_DIRECTION){
-            findClosestEntityForTask(ent, TaskType.WALKING);
+            Entity z = findClosestEntityForTask(ent, TaskType.WALKING);
+            z.turn(z.position);
+            if(this.position == z.position){
+                TaskMessage pMessage =  new TaskMessage(this, z);
+                Task.performNonSelfServingTask(pMessage);
+            }
         }
         else if (p.getTaskType() == TaskType.TRANSPORTING_LUGGAGE){
-            //findClosestEntityForTask(ent, TaskType.);
-
+            if (Person.Civil.getHasLuggage() ) {
+                //wenn this.position = Gepäckabgbestation ist die Aufgabe erledigt
+            }
         }
         else{
             //p.getTaskType() == TaskType.WALKING

@@ -20,7 +20,7 @@ public class Civilian extends Person {
     }
 
 
-    boolean getHasLuggae(){
+    boolean getHasLuggage(){
         double rand = Math.random()*(0-1);
         int bool= (int) Math.round(rand);
         if(bool== 1){
