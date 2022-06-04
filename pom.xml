@@ -7,14 +7,18 @@
     <groupId>org.example</groupId>
     <artifactId>SE2-Civilian</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <dependencies>
-        <dependency>
-            <groupId>dhbw.sose2022.softwareengineering</groupId>
-            <artifactId>airportargentsim</artifactId>
-            <version>0.0.3</version>
-            <scope>compile</scope>
-        </dependency>
-    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>17</source>
+                    <target>17</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <properties>
         <maven.compiler.source>18</maven.compiler.source>

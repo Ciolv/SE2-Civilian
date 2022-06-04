@@ -7,25 +7,26 @@ import Plugin.Task.TaskType;
 import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulation.entity.Agent;
 import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulation.entity.Entity;
 import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulation.message.Message;
+import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.geometry.Point;
 import jdk.jshell.spi.ExecutionControl;
 
-import java.awt.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
+
+import static java.lang.Math.sqrt;
 
 public class Person extends Agent {
 
     protected int id;
     protected Point position;
     protected Characteristic[] characteristics;
+    protected double speed;
     protected List<Task> tasks;
     protected TaskType[] taskTypes;
     protected Boolean isEnqueued;
 
-    void calculateMovement()throws ExecutionControl.NotImplementedException {
-        throw new ExecutionControl.NotImplementedException("Not Implemented");
-    }
 
     /**
      * If a matching task is present and near, the method executes it.
@@ -60,6 +61,61 @@ public class Person extends Agent {
         }
     }
 
+
+    void calculateMovement(){
+        double rand = Math.random()*(0-5);
+        int pRand= (int) Math.round(rand);
+        double pSpeed= characteristics[pRand].getValue();
+        speed = pSpeed;
+    }
+
+    public double getSpeedy() {
+        return speed;
+    }
+
+    Entity findClosestEntity(Entity[] entities) throws ExecutionControl.NotImplementedException {
+        double x = position.getX();
+        int y = (int) position.getY();
+        int maxDist = 0;
+        // String name ;
+        int height = getWorld().getHeight();
+        int width = getWorld().getWidth();
+        if (width<height){
+            maxDist= height;
+        }
+        else{
+            maxDist=width;
+        }
+
+        double entfernung = maxDist;
+        double entfRechnung;
+        Entity erg = null;
+        ArrayList<Person> foundEntities= new ArrayList(getWorld().getEntities(x, y, maxDist));
+        int p;
+        p = foundEntities.size();
+        if (p != 0){
+            for (int i=0; i<p;i++){
+                //int[] [] pos = new int[] [];
+                ArrayList<Point> pos = new ArrayList();
+                Person pPerson = foundEntities.get(i);
+                Point pos1= pPerson.getPosition();
+                int xE = pos1.getX();
+                int yE = pos1.getY();
+                //int insgX = xE - x;
+                //int insgY = yE - y;
+                entfRechnung=sqrt(Math.pow(x-xE, 2)+Math.pow(y-yE, 2));
+                if(entfRechnung < entfernung) {
+                    entfernung = entfRechnung;
+                    erg = foundEntities.get(i);
+                }
+            }
+        }
+        else{
+            erg = null;
+        }
+        return erg;
+    }
+
     void measureTaskTimer() throws ExecutionControl.NotImplementedException {
         throw new ExecutionControl.NotImplementedException("Not Implemented");
     }
@@ -84,9 +140,6 @@ public class Person extends Agent {
         throw new ExecutionControl.NotImplementedException("Not Implemented");
     }
 
-    Entity findClosestEntity(Entity[] entities) throws ExecutionControl.NotImplementedException {
-        throw new ExecutionControl.NotImplementedException("Not Implemented");
-    }
 
     /**
      * Dequeues the finished task from the tasks list.

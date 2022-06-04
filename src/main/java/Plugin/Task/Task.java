@@ -167,12 +167,30 @@ public class Task extends StaticEntity {
         }
     }
 
+    
+    /**
+     * Increases the round counter for each person in queue by one.
+     */
+    private void increaseRoundCounter() {
+        for (Person waitingPerson :
+                Collections.list(queue.keys())) {
+            int round = queue.get(waitingPerson);
+            queue.put(waitingPerson, round + 1);
+        }
+    }
+
+    public void luggageCheckIn(double pSpeed ){
+
+
+    }
+
     /**
      * Performs task execution for all producers and as many consumers as possible.
      *
      * As many consumers as possible means, that if the number of consumers in the queue is higher than the number
      * of producers, not all consumers can be served.
      */
+
     @Override
     public void pluginUpdate() {
         increaseRoundCounter();
