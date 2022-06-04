@@ -179,9 +179,26 @@ public class Task extends StaticEntity {
         }
     }
 
-    public void luggageCheckIn(double pSpeed ){
+    public void transporting_luggage(double pSpeed ){
 
+    }
 
+    public void walking(double pSpeed ){
+    }
+
+    public void cleaning(double pSpeed ){
+    }
+
+    public void buy_ticket(double pSpeed ){
+    }
+
+    public void sell_ticket(double pSpeed ){
+    }
+
+    public void ask_for_direction(double pSpeed ){
+    }
+
+    public void tell_direction(double pSpeed ){
     }
 
     /**
