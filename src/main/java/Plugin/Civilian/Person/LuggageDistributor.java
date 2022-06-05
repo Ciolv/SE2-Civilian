@@ -2,9 +2,16 @@ package Plugin.Civilian.Person;
 
 import Plugin.Task.TaskType;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class LuggageDistributor extends Person {
-    private TaskType[] taskTypes = new TaskType[] {
-            TaskType.WALKING,
-            TaskType.TRANSPORTING_LUGGAGE
-    };
+    public LuggageDistributor() {
+        super();
+        taskTypes = new TaskType[] {
+                TaskType.TRANSPORTING_LUGGAGE
+        };
+
+        generateTaskQueue(TaskType.TRANSPORTING_LUGGAGE, 20);
+    }
 }

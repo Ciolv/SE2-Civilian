@@ -17,12 +17,6 @@ public class TaskMessage implements LocalMessage, DirectedMessage {
     static TaskType taskToComplete;
     static TaskType taskToPerform;
 
-    public TaskMessage(Entity origin, Entity target) {
-        this.origin = origin;
-        this.target = target;
-        originPosition = new Point(origin.getPosition().getX(), origin.getPosition().getY());
-    }
-
     public TaskMessage(Entity origin, Entity target, String messageContent) {
         this.origin = origin;
         this.target = target;
