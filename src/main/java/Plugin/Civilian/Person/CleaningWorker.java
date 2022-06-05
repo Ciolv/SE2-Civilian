@@ -1,10 +1,19 @@
 package Plugin.Civilian.Person;
 
+import Plugin.Task.Task;
 import Plugin.Task.TaskType;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class CleaningWorker extends Person {
-    private TaskType[] taskTypes = new TaskType[] {
-            TaskType.WALKING,
-            TaskType.CLEANING
-    };
+    public CleaningWorker() {
+        super();
+        taskTypes = new TaskType[] {
+                TaskType.CLEANING
+        };
+
+        tasks.addAll(generateTaskQueue(TaskType.CLEANING, 20));
+    }
 }

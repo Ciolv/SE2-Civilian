@@ -3,8 +3,13 @@ package Plugin.Civilian.Person;
 import Plugin.Task.TaskType;
 
 public class Loader extends Person {
-    private TaskType[] taskTypes = new TaskType[] {
-            TaskType.WALKING,
-            TaskType.TRANSPORTING_LUGGAGE
-    };
+    public Loader() {
+        super();
+
+        taskTypes = new TaskType[] {
+                TaskType.TRANSPORTING_LUGGAGE
+        };
+
+        generateTaskQueue(TaskType.TRANSPORTING_LUGGAGE, 20);
+    }
 }

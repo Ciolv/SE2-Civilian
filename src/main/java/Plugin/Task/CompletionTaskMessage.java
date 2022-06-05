@@ -4,7 +4,6 @@ import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.geometry
 import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulation.entity.Entity;
 import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulation.message.DirectedMessage;
 import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulation.message.LocalMessage;
-import jdk.jshell.spi.ExecutionControl;
 
 public class CompletionTaskMessage implements DirectedMessage, LocalMessage {
 

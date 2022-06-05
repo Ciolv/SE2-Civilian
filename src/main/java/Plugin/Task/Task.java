@@ -19,14 +19,20 @@ public class Task extends StaticEntity {
     TaskType taskType;
     TaskType[] applicableTaskTypes;
 
+
+
     /**
      * Validate whether a {@link TaskType} list contains any task type applicable for this task or not.
      * @param taskTypes {@link TaskType} list that should be validated for applicability.
      * @return True if a {@link TaskType} matches with the applicable TaskTypes, False otherwise.
      */
-    boolean taskIsApplicable(TaskType[] taskTypes) {
+    public boolean taskIsApplicable(TaskType[] taskTypes) {
         return Arrays.stream(applicableTaskTypes).anyMatch(tType -> Arrays.stream(
                 taskTypes).anyMatch(personTaskType -> tType == personTaskType));
+    }
+
+    public boolean taskIsApplicable(TaskType taskType) {
+        return taskIsApplicable(new TaskType[] {taskType});
     }
 
     @Override
@@ -66,51 +72,6 @@ public class Task extends StaticEntity {
      */
     public TaskType getTaskType() {
         return taskType;
-    }
-
-    /**
-     * Sorts the current queue so that that it starts with all consumers and lists producers at the end.
-     *
-     * This sorting will allow to first calculate the demand for the producers and work on them afterwards.
-     *
-     * @return Sorted array beginning with consumers and ending wich producers.
-     */
-    private Person[] sortWorkingQueue() {
-        Person[] consumer = getAllConsumers().toArray(Person[]::new);
-        Person[] producer = getAllProducers().toArray(Person[]::new);
-
-        // Merging both arrays into one array with consumers first and producers afterwards.
-        Person[] sortedQueue = new Person[consumer.length + producer.length];
-        System.arraycopy(consumer, 0, sortedQueue, 0,consumer.length);
-        System.arraycopy(producer, 0, sortedQueue, consumer.length, producer.length);
-
-        return sortedQueue;
-    }
-
-    /**
-     * Returns a {@link Person} array, containing all elements in queue that are consumers.
-     *
-     * Consumers are all entities in the queue, having the same {@link TaskType} as the Task.
-     */
-    private Stream<Person> getAllConsumers() {
-        Stream<TaskMessage> consumerMessages = Collections.list(queue.keys()).stream().filter(
-                q -> Arrays.asList(q.getTaskToComplete()).equals(this.taskType)
-        );
-
-        return consumerMessages.map(taskMessage -> (Person)taskMessage.getOrigin());
-    }
-
-    /**
-     * Returns a {@link Person} array, containing all elements in queue that are producers.
-     *
-     * Consumers are all entities in the queue, having the same {@link TaskType} as the Task.
-     */
-    private Stream<Person> getAllProducers() {
-        Stream<TaskMessage> consumerMessages = Collections.list(queue.keys()).stream().filter(
-                q -> !Arrays.asList(q.getTaskToComplete()).equals(this.taskType)
-        );
-
-        return consumerMessages.map(taskMessage -> (Person)taskMessage.getOrigin());
     }
 
     private void performSelfServingTask(TaskMessage message) {
@@ -167,50 +128,12 @@ public class Task extends StaticEntity {
         }
     }
 
-    
-    /**
-     * Increases the round counter for each person in queue by one.
-     */
-    private void increaseRoundCounter() {
-        for (Person waitingPerson :
-                Collections.list(queue.keys())) {
-            int round = queue.get(waitingPerson);
-            queue.put(waitingPerson, round + 1);
-        }
-    }
-
-    public void transporting_luggage(double pSpeed, TaskTimer timer ){
-        TaskMessage taskMessager = queue.get(timer);
-        TaskType[] toDo = TaskMessage.getTaskToComplete();
-        taskIsApplicable(TaskMessage.getTaskToComplete()) ;
-        TaskMessage.getTaskToPerform() = message;
-    }
-
-    public void walking(double pSpeed ){
-    }
-
-    public void cleaning(double pSpeed ){
-    }
-
-    public void buy_ticket(double pSpeed ){
-    }
-
-    public void sell_ticket(double pSpeed ){
-    }
-
-    public void ask_for_direction(double pSpeed ){
-    }
-
-    public void tell_direction(double pSpeed ){
-    }
-
     /**
      * Performs task execution for all producers and as many consumers as possible.
      *
      * As many consumers as possible means, that if the number of consumers in the queue is higher than the number
      * of producers, not all consumers can be served.
      */
-
     @Override
     public void pluginUpdate() {
         increaseRoundCounter();
