@@ -1,6 +1,7 @@
 package Plugin.Civilian.Person;
 
 import Plugin.Task.TaskType;
+import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.geometry.Point;
 import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulation.entity.Entity;
 import jdk.jshell.spi.ExecutionControl;
 
@@ -9,8 +10,8 @@ public class Civilian extends Person {
     boolean hasCabinLuggage;
     boolean hasLuggage;
 
-    public Civilian() {
-        super();
+    public Civilian(Point position) {
+        super(position);
         throwLuggageDice();
         taskTypes = new TaskType[] {
                 TaskType.ASK_FOR_DIRECTION,

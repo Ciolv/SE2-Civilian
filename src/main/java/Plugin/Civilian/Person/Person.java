@@ -23,7 +23,8 @@ public abstract class Person extends Agent {
     protected Boolean isEnqueued;
 
 
-    public Person() {
+    public Person(Point position) {
+        this.position = position;
         buildCharacter();
         calculateMovementSpeed();
     }
