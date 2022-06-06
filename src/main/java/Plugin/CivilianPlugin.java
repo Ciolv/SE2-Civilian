@@ -28,7 +28,7 @@ public class CivilianPlugin implements Plugin {
     /**
      * Register all entities, the simulation shall be able to use
      */
-    public void registerPluginEntities() {
+    private void registerPluginEntities() {
 
         registerNonPersonEntities();
         registerPersonEntity(Civilian.class);
@@ -56,7 +56,7 @@ public class CivilianPlugin implements Plugin {
     /**
      * Register all entities, extending {@link Person}, the simulation shall be able to use
      */
-    public void registerPersonEntity(Class entityType) {
+    private void registerPersonEntity(Class entityType) {
         if (entityType.getSuperclass() == Person.class) {
             try {
                 registerEntity(this, entityType.getSimpleName(), entityType, new ConfigurableAttribute[] {
