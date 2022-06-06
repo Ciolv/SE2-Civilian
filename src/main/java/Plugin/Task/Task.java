@@ -165,6 +165,7 @@ public class Task extends StaticEntity {
                      matchingMessages) {
                     if (!usedMessages.contains(matchingMessage)){
                         partnerMessage = matchingMessage;
+                        usedMessages.add(matchingMessage);
                         break;
                     }
                 }
@@ -175,6 +176,7 @@ public class Task extends StaticEntity {
                     taskTimer.decreaseDuration();
                     partnerTaskTimer.decreaseDuration();
 
+                    // Send completion messages, if the minimal working time is exceeded
                     if (taskTimer.durationExceeded() && partnerTaskTimer.durationExceeded()) {
                         getWorld().sendMessage(new CompletionTaskMessage(partnerMessage.getOrigin(),
                                 message.getOrigin(),
@@ -192,8 +194,6 @@ public class Task extends StaticEntity {
                         queue.remove(message);
                         queue.remove(partnerMessage);
                     }
-
-                    usedMessages.add(message);
                 }
             }
         }
@@ -218,6 +218,7 @@ public class Task extends StaticEntity {
      */
     public void pluginUpdate() {
         increaseRoundCounter();
+        usedMessages.clear();
 
         for (TaskMessage message : Collections.list(queue.keys())) {
             if (queue.get(message) != null ) {
