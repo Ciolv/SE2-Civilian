@@ -14,13 +14,13 @@ import java.util.*;
 
 public abstract class Person extends Agent {
     private String name;
-    protected Characteristic[] characteristics;
-    protected double individualSpeed = 1;
-    protected List<TaskType> tasks = new ArrayList<>();
+    private Characteristic[] characteristics;
+    private double individualSpeed = 1;
+    private List<TaskType> tasks = new ArrayList<>();
     protected TaskType[] taskTypes;
-    protected Boolean isEnqueued = false;
-    protected Boolean isWalking = false;
-    private Boolean removed = false;
+    private boolean isEnqueued = false;
+    private boolean isWalking = false;
+    private boolean removed = false;
     private ArrayList<Message> knownMessages = new ArrayList<>();
 
 
@@ -84,7 +84,7 @@ public abstract class Person extends Agent {
     }
 
     protected List<TaskType> generateTaskQueue(TaskType taskType, int amount) {
-            int taskCount = (int) Math.random() * amount;
+            int taskCount = (int) (Math.random() * amount);
             List<TaskType> taskQueue = new ArrayList<>(taskCount);
 
             for (int i = 0; i < taskCount; i++) {
@@ -132,7 +132,7 @@ public abstract class Person extends Agent {
 
 
         for (int i = 0; i < characteristicCount; i++) {
-            int remainingCharacteristic = (int) Math.random() * chars.size();
+            int remainingCharacteristic = (int) (Math.random() * chars.size());
             characteristics[i] = chars.get(remainingCharacteristic);
 
             chars.remove(remainingCharacteristic);
@@ -260,7 +260,7 @@ public abstract class Person extends Agent {
                     if (m instanceof CompletionTaskMessage) {
                         taskCompleted(((CompletionTaskMessage) m).getCompletedTask(),
                                 ((CompletionTaskMessage) m).getExecutionTime(),
-                                (int) Math.ceil(((CompletionTaskMessage) m).getIndividualDuration())
+                                (int) Math.round(((CompletionTaskMessage) m).getIndividualDuration())
                         );
                     }
                 }
@@ -275,18 +275,25 @@ public abstract class Person extends Agent {
      */
     public double getSpeedFactor() {
 
-        double speed = 0;
+        double factor = 0;
         if (!removed) {
             if (characteristics.length > 0) {
                 for (Characteristic characteristic :
                         characteristics) {
-                    speed += characteristic.value;
+                    factor += characteristic.value;
                 }
 
-                speed = speed / characteristics.length;
+                factor = factor / characteristics.length;
+
+                if (factor < 0.8) {
+                    factor = 0.8;
+                } else if (factor > 1.2) {
+                    factor = 1.2;
+                }
+
             }
         }
 
-        return speed;
+        return factor;
     }
 }

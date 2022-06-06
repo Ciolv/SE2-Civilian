@@ -1,8 +1,8 @@
 package Plugin.Task;
 
 public class TaskTimer {
-    private double individualDuration;
-    private double remainingDuration;
+    private int individualDuration;
+    private int remainingDuration;
     private int waitingTime = 0;
 
     public void increaseWaitingTime() {
@@ -20,10 +20,15 @@ public class TaskTimer {
     public boolean durationExceeded() {
         return remainingDuration <= 0;
     }
-    public double getIndividualDuration() { return individualDuration; }
+    public int getIndividualDuration() { return individualDuration; }
 
     public TaskTimer(int defaultDuration, double speedFactor) {
-        individualDuration = defaultDuration * speedFactor;
+        individualDuration = (int)Math.round(defaultDuration / speedFactor);
+
+        if (individualDuration == 0) {
+            individualDuration = 1;
+        }
+
         remainingDuration = individualDuration;
     }
 }

@@ -16,6 +16,7 @@ public class Task extends StaticEntity {
     TaskType taskType;
     TaskType[] applicableTaskTypes;
     private ArrayList<Message> knownMessages = new ArrayList<>();
+    private ArrayList<Message> usedMessages = new ArrayList<>();
 
     public Task(String taskType, Integer duration) {
         applicableTaskTypes = applicableTasksFromString(taskType);
@@ -127,18 +128,21 @@ public class Task extends StaticEntity {
     }
 
     private void performSelfServingTask(TaskMessage message) {
-        TaskTimer taskTimer = queue.get(message);
-        if (taskTimer != null ) {
-            taskTimer.decreaseDuration();
+        if (!usedMessages.contains(message)) {
+            TaskTimer taskTimer = queue.get(message);
+            if (taskTimer != null) {
+                taskTimer.decreaseDuration();
+                usedMessages.add(message);
 
-            if (taskTimer.durationExceeded()) {
-                getWorld().sendMessage(new CompletionTaskMessage(message.getOrigin(),
-                        message.getOrigin(),
-                        message.getTaskToPerform(),
-                        taskTimer.getWaitingTime(),
-                        taskTimer.getIndividualDuration()));
+                if (taskTimer.durationExceeded()) {
+                    getWorld().sendMessage(new CompletionTaskMessage(message.getOrigin(),
+                            message.getOrigin(),
+                            message.getTaskToPerform(),
+                            taskTimer.getWaitingTime(),
+                            taskTimer.getIndividualDuration()));
 
-                queue.remove(message);
+                    queue.remove(message);
+                }
             }
         }
     }
@@ -146,33 +150,50 @@ public class Task extends StaticEntity {
     private void performNonSelfServingTask(TaskMessage message) {
         TaskTimer taskTimer = queue.get(message);
         if (taskTimer != null ) {
-            taskTimer.decreaseDuration();
+            // Only consumers should start tasks execution
+            if (taskType == message.getTaskToComplete()) {
 
-            // Find first message that matches the TaskType required to complete this message.
-            List<TaskMessage> matchingMessages = Collections.list(
-                    queue.keys()).stream().filter(
-                    taskMessage -> message.getTaskToComplete().equals(taskMessage.getTaskToPerform())
-            ).toList();
-            TaskMessage partnerMessage = matchingMessages.size() > 0 ? matchingMessages.get(0) : null;
+                // Find first message that matches the TaskType required to complete this message.
+                List<TaskMessage> matchingMessages = Collections.list(
+                        queue.keys()).stream().filter(
+                        taskMessage -> message.getTaskToComplete().equals(taskMessage.getTaskToPerform())
+                ).toList();
+                TaskMessage partnerMessage = null;
 
-            // If one is found, let them both complete their work
-            if (partnerMessage != null) {
-                if (taskTimer.durationExceeded()) {
-                    getWorld().sendMessage(new CompletionTaskMessage(partnerMessage.getOrigin(),
-                            message.getOrigin(),
-                            message.getTaskToComplete(),
-                            taskTimer.getWaitingTime(),
-                            taskTimer.getIndividualDuration()
-                    ));
-                    getWorld().sendMessage(new CompletionTaskMessage(message.getOrigin(),
-                            partnerMessage.getOrigin(),
-                            partnerMessage.getTaskToComplete(),
-                            taskTimer.getWaitingTime(),
-                            taskTimer.getIndividualDuration()
-                    ));
+                // Furthermore, messages can only be used once per round
+                for (TaskMessage matchingMessage:
+                     matchingMessages) {
+                    if (!usedMessages.contains(matchingMessage)){
+                        partnerMessage = matchingMessage;
+                        break;
+                    }
+                }
 
-                    queue.remove(message);
-                    queue.remove(partnerMessage);
+                // If one is found, let them both complete their work
+                if (partnerMessage != null) {
+                    var partnerTaskTimer = queue.get(partnerMessage);
+                    taskTimer.decreaseDuration();
+                    partnerTaskTimer.decreaseDuration();
+
+                    if (taskTimer.durationExceeded() && partnerTaskTimer.durationExceeded()) {
+                        getWorld().sendMessage(new CompletionTaskMessage(partnerMessage.getOrigin(),
+                                message.getOrigin(),
+                                message.getTaskToComplete(),
+                                taskTimer.getWaitingTime(),
+                                taskTimer.getIndividualDuration()
+                        ));
+                        getWorld().sendMessage(new CompletionTaskMessage(message.getOrigin(),
+                                partnerMessage.getOrigin(),
+                                partnerMessage.getTaskToComplete(),
+                                partnerTaskTimer.getWaitingTime(),
+                                partnerTaskTimer.getIndividualDuration()
+                        ));
+
+                        queue.remove(message);
+                        queue.remove(partnerMessage);
+                    }
+
+                    usedMessages.add(message);
                 }
             }
         }
