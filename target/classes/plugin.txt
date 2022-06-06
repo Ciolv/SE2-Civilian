@@ -1,0 +1,4 @@
+id:85123587
+name:Civilians
+authors:DeineMammi
+entrypoint:Plugin.CivilianPlugin
