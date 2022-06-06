@@ -30,7 +30,6 @@ public class CompletionTaskMessage implements DirectedMessage, LocalMessage {
         return completedTask;
     }
 
-    @Override
     public Entity getTarget() {
         return target;
     }

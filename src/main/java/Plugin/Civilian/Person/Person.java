@@ -7,6 +7,7 @@ import Plugin.Task.TaskMessage;
 import Plugin.Task.TaskType;
 import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulation.entity.Agent;
 import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulation.entity.Entity;
+import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulation.message.DirectedMessage;
 import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulation.message.Message;
 
 import java.util.*;
@@ -180,9 +181,9 @@ public abstract class Person extends Agent {
     private void startToPerformTask() {
         TaskType task = tasks.get(0);
         Entity closestEntity = findClosestEntityForTask(task);
-        double distance = this.getPosition().getDistance(closestEntity.getPosition());
 
         if (closestEntity != null) {
+            double distance = this.getPosition().getDistance(closestEntity.getPosition());
 
             if (distance > closestEntity.getHeight() &&
             distance > closestEntity.getWidth()) {
@@ -248,13 +249,23 @@ public abstract class Person extends Agent {
     @Override
     public void receiveMessage(Message m) {
         if (!removed && !knownMessages.contains(m)) {
-            if (m instanceof CompletionTaskMessage) {
-                taskCompleted(((CompletionTaskMessage) m).getCompletedTask(),
-                        ((CompletionTaskMessage) m).getExecutionTime(),
-                        (int)Math.ceil(((CompletionTaskMessage) m).getIndividualDuration())
-                );
+            boolean isDirectedMessage =
+                    Arrays.stream(m.getClass().getInterfaces()).anyMatch(i -> i == DirectedMessage.class);
+
+            // Only messages that are directed to this task should be performed and only of the TaskType matches.
+            // If so, enqueue.
+            if (isDirectedMessage) {
+                boolean isDirectedToThisTask = ((DirectedMessage) m).getTarget().equals(this);
+                if (isDirectedToThisTask) {
+                    if (m instanceof CompletionTaskMessage) {
+                        taskCompleted(((CompletionTaskMessage) m).getCompletedTask(),
+                                ((CompletionTaskMessage) m).getExecutionTime(),
+                                (int) Math.ceil(((CompletionTaskMessage) m).getIndividualDuration())
+                        );
+                    }
+                }
+                knownMessages.add(m);
             }
-            knownMessages.add(m);
         }
     }
     

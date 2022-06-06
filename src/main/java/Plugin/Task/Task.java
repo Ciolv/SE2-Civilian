@@ -94,22 +94,8 @@ public class Task extends StaticEntity {
                             String.format("'%s' can not be performed at this %s", m, this.getClass())
                     );
                 }
-            } else {
-                if (m instanceof TaskMessage) {
-                    CivilianPlugin.logger.debug(
-                            String.format("%s '%d' is not the target of the message directed to  %s '%d'",
-                                    this.getClass().getSimpleName(),
-                                    this.getUID(),
-                                    ((DirectedMessage) m).getTarget().getClass().getSimpleName(),
-                                    ((DirectedMessage) m).getTarget().getUID()
-                            ));
-                } else {
-                    CivilianPlugin.logger.debug(
-                            String.format("'%s' can not be performed at this %s", m, this.getClass())
-                    );
-                }
-
             }
+
             knownMessages.add(m);
         }
     }
@@ -162,20 +148,6 @@ public class Task extends StaticEntity {
         if (taskTimer != null ) {
             taskTimer.decreaseDuration();
 
-//            Iterator<TaskMessage> iterator = queue.keys().asIterator();
-//            TaskMessage partnerMessage = null;
-//
-//            while (iterator.hasNext()) {
-//                TaskMessage taskMessage = iterator.next();
-//                TaskType toPerform = taskMessage.getTaskToPerform();
-//                TaskType searched = message.getTaskToComplete();
-//
-//                if (toPerform.equals(searched)) {
-//                    partnerMessage = taskMessage;
-//                    break;
-//                }
-//            }
-
             // Find first message that matches the TaskType required to complete this message.
             List<TaskMessage> matchingMessages = Collections.list(
                     queue.keys()).stream().filter(
@@ -188,13 +160,13 @@ public class Task extends StaticEntity {
                 if (taskTimer.durationExceeded()) {
                     getWorld().sendMessage(new CompletionTaskMessage(partnerMessage.getOrigin(),
                             message.getOrigin(),
-                            partnerMessage.getTaskToComplete(),
+                            message.getTaskToComplete(),
                             taskTimer.getWaitingTime(),
                             taskTimer.getIndividualDuration()
                     ));
                     getWorld().sendMessage(new CompletionTaskMessage(message.getOrigin(),
                             partnerMessage.getOrigin(),
-                            message.getTaskToComplete(),
+                            partnerMessage.getTaskToComplete(),
                             taskTimer.getWaitingTime(),
                             taskTimer.getIndividualDuration()
                     ));
@@ -227,11 +199,12 @@ public class Task extends StaticEntity {
         increaseRoundCounter();
 
         for (TaskMessage message : Collections.list(queue.keys())) {
-
-            if (message.getTaskToComplete() == message.getTaskToPerform()) {
-                performSelfServingTask(message);
-            } else {
-                performNonSelfServingTask(message);
+            if (queue.get(message) != null ) {
+                if (message.getTaskToComplete().isSelfServing()) {
+                    performSelfServingTask(message);
+                } else {
+                    performNonSelfServingTask(message);
+                }
             }
         }
     }

@@ -42,27 +42,22 @@ public class TaskMessage implements LocalMessage, DirectedMessage {
         return taskToPerform;
     }
 
-    @Override
     public Entity getTarget() {
         return target;
     }
 
-    @Override
     public int getMaxRange() {
         return maxRange;
     }
 
-    @Override
     public Entity getOrigin() {
         return origin;
     }
 
-    @Override
     public Point getOriginPosition() {
         return originPosition;
     }
 
-    @Override
     public void fromString(String s) {
         taskToPerform = TaskType.fromValue(s);
 
