@@ -5,6 +5,16 @@ public class TaskTimer {
     private int remainingDuration;
     private int waitingTime = 0;
 
+    public TaskTimer(int defaultDuration, double speedFactor) {
+        // The expected duration should be based on the speedFactor but should be at least one
+        expectedDuration = (int)Math.round(defaultDuration / speedFactor);
+        if (expectedDuration == 0) {
+            expectedDuration = 1;
+        }
+
+        remainingDuration = expectedDuration;
+    }
+
     public int getWaitingTime() {
         return waitingTime;
     }
@@ -35,13 +45,4 @@ public class TaskTimer {
      */
     public int getExpectedDuration() { return expectedDuration; }
 
-    public TaskTimer(int defaultDuration, double speedFactor) {
-        // The expected duration should be based on the speedFactor but should be at least one
-        expectedDuration = (int)Math.round(defaultDuration / speedFactor);
-        if (expectedDuration == 0) {
-            expectedDuration = 1;
-        }
-
-        remainingDuration = expectedDuration;
-    }
 }

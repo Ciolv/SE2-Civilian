@@ -27,48 +27,24 @@ public class Task extends StaticEntity {
     }
 
     /**
-     * Get the {@link Task} from the string and its counterpart.
+     * Performs task execution for all producers and as many consumers as possible.
      *
-     * @param task {@link TaskType#value} that the array should be based on
-     * @return The {@link Task} from the string and its counterpart.
+     * As many consumers as possible means, that if the number of consumers in the queue is higher than the number
+     * of producers, not all consumers can be served.
      */
-    public TaskType[] applicableTasksFromString(String task) {
-        this.taskType = TaskType.fromValue(task);
+    public void pluginUpdate() {
+        increaseRoundCounter();
+        usedMessages.clear();
 
-        if (taskType != null) {
-            return new TaskType[]{
-                    taskType,
-                    TaskType.getMatchingTask(taskType)
-            };
-        } else {
-            if (Arrays.stream(TaskType.values()).toList().contains(task)) {
-                CivilianPlugin.logger.warn(String.format("%s has not been implemented.", task));
-            } else {
-                CivilianPlugin.logger.error(String.format("%s is not a valid task!", task));
+        for (TaskMessage message : Collections.list(queue.keys())) {
+            if (queue.get(message) != null ) {
+                if (message.getTaskToComplete().isSelfServing()) {
+                    performSelfServingTask(message);
+                } else {
+                    performNonSelfServingTask(message);
+                }
             }
-
-            return new TaskType[]{};
         }
-    }
-
-    /**
-     * Validate whether a {@link TaskType} list contains any task type applicable for this task or not.
-     * @param taskTypes {@link TaskType} list that should be validated for applicability.
-     * @return True if a {@link TaskType} matches with the applicable TaskTypes, False otherwise.
-     */
-    public boolean taskIsApplicable(TaskType[] taskTypes) {
-        return Arrays.stream(applicableTaskTypes).anyMatch(tType -> Arrays.stream(
-                taskTypes).anyMatch(personTaskType -> tType == personTaskType));
-    }
-
-    /**
-     * Validate whether the provided {@link TaskType} is applicable to this task
-     *
-     * @param taskType {@link TaskType} that should be validated for applicability.
-     * @return True if a the provided {@link TaskType} matches with any member of {@link Task#applicableTaskTypes}, False otherwise.
-     */
-    public boolean taskIsApplicable(TaskType taskType) {
-        return taskIsApplicable(new TaskType[] {taskType});
     }
 
     public void receiveMessage(Message m) {
@@ -122,6 +98,51 @@ public class Task extends StaticEntity {
     }
 
     /**
+     * Get the {@link Task} from the string and its counterpart.
+     *
+     * @param task {@link TaskType#value} that the array should be based on
+     * @return The {@link Task} from the string and its counterpart.
+     */
+    public TaskType[] applicableTasksFromString(String task) {
+        this.taskType = TaskType.fromValue(task);
+
+        if (taskType != null) {
+            return new TaskType[]{
+                    taskType,
+                    TaskType.getMatchingTask(taskType)
+            };
+        } else {
+            if (Arrays.stream(TaskType.values()).toList().contains(task)) {
+                CivilianPlugin.logger.warn(String.format("%s has not been implemented.", task));
+            } else {
+                CivilianPlugin.logger.error(String.format("%s is not a valid task!", task));
+            }
+
+            return new TaskType[]{};
+        }
+    }
+
+    /**
+     * Validate whether a {@link TaskType} list contains any task type applicable for this task or not.
+     * @param taskTypes {@link TaskType} list that should be validated for applicability.
+     * @return True if a {@link TaskType} matches with the applicable TaskTypes, False otherwise.
+     */
+    public boolean taskIsApplicable(TaskType[] taskTypes) {
+        return Arrays.stream(applicableTaskTypes).anyMatch(tType -> Arrays.stream(
+                taskTypes).anyMatch(personTaskType -> tType == personTaskType));
+    }
+
+    /**
+     * Validate whether the provided {@link TaskType} is applicable to this task
+     *
+     * @param taskType {@link TaskType} that should be validated for applicability.
+     * @return True if a the provided {@link TaskType} matches with any member of {@link Task#applicableTaskTypes}, False otherwise.
+     */
+    public boolean taskIsApplicable(TaskType taskType) {
+        return taskIsApplicable(new TaskType[] {taskType});
+    }
+
+    /**
      * @return Comma separated string containing all applicable {@link TaskType#value}s
      */
     private String applicableTaskTypeString() {
@@ -141,14 +162,6 @@ public class Task extends StaticEntity {
         queue.put(message, new TaskTimer(duration, ((Person)message.getOrigin()).getSpeedFactor()));
     }
 
-    /**
-     * Get the {@link TaskType} of the Task.
-     *
-     * Enqueued Persons with the same {@link TaskType} will be considered as persons, that can fulfill this task.
-     */
-    public TaskType getTaskType() {
-        return taskType;
-    }
 
     /**
      * Process a {@link TaskMessage} that has no need for a counterpart message
@@ -244,27 +257,6 @@ public class Task extends StaticEntity {
                 Collections.list(queue.keys())) {
             TaskTimer taskTimer = queue.get(enqueuedMessage);
             taskTimer.increaseWaitingTime();
-        }
-    }
-
-    /**
-     * Performs task execution for all producers and as many consumers as possible.
-     *
-     * As many consumers as possible means, that if the number of consumers in the queue is higher than the number
-     * of producers, not all consumers can be served.
-     */
-    public void pluginUpdate() {
-        increaseRoundCounter();
-        usedMessages.clear();
-
-        for (TaskMessage message : Collections.list(queue.keys())) {
-            if (queue.get(message) != null ) {
-                if (message.getTaskToComplete().isSelfServing()) {
-                    performSelfServingTask(message);
-                } else {
-                    performNonSelfServingTask(message);
-                }
-            }
         }
     }
 }

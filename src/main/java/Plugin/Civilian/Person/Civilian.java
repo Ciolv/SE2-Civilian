@@ -16,6 +16,14 @@ public class Civilian extends Person {
         throwLuggageDice();
     }
 
+    public boolean hasLuggage(){
+        return hasLuggage;
+    }
+
+    public boolean hasCabinLuggage(){
+        return hasCabinLuggage;
+    }
+
     /**
      * Decides randomly, whether the {@link Civilian#hasLuggage} property is true or false.
      *
@@ -31,11 +39,4 @@ public class Civilian extends Person {
         }
     }
 
-    public boolean hasLuggage(){
-        return hasLuggage;
-    }
-
-    public boolean hasCabinLuggage(){
-        return hasCabinLuggage;
-    }
 }

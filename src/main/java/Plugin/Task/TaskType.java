@@ -1,9 +1,5 @@
 package Plugin.Task;
 
-import Plugin.Civilian.Person.Characteristic;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.Nullable;
-
 public enum TaskType {
     WALKING("Walk"),
     CLEANING("Clean"),
@@ -24,7 +20,7 @@ public enum TaskType {
      * @param value The value of the TaskType to determine
      * @return The TaskType that matches the value, or null if there exists no matching TaskType
      */
-    public static @Nullable TaskType fromValue(String value) {
+    public static TaskType fromValue(String value) {
         for (TaskType type :
                 TaskType.values()) {
             if (value.equals(type.value)) {
@@ -40,7 +36,7 @@ public enum TaskType {
      * @param name The string name of the TaskType
      * @return The TaskType that matches the name, or null if there exists no matching TaskType
      */
-    public static @Nullable TaskType fromName(String name) {
+    public static TaskType fromName(String name) {
         for (TaskType type :
                 TaskType.values()) {
             if (name.equals(type.name())) {
@@ -56,7 +52,7 @@ public enum TaskType {
      * @param requestedType The TaskType whose counterpart is to determine
      * @return The matching counterpart or null, if no counterpart exists
      */
-    public static @Nullable TaskType getMatchingTask(TaskType requestedType) {
+    public static TaskType getMatchingTask(TaskType requestedType) {
         switch (requestedType) {
             case SELL_TICKET -> {
                 return BUY_TICKET;

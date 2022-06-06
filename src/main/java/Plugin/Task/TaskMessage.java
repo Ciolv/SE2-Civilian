@@ -47,18 +47,16 @@ public class TaskMessage implements LocalMessage, DirectedMessage {
         return originPosition;
     }
 
-    /**
-     * @return String list of all {@link TaskType}s
-     */
-    public static ArrayList<String> getValidMessages() {
-        ArrayList<String> taskTypes = new ArrayList<>();
-
-        for (TaskType tt:
-                TaskType.values()) {
-            taskTypes.add(tt.value);
-        }
-
-        return taskTypes;
+    @Override
+    public String toString() {
+        return String.format("%d asks %d to register task '%s' that can be served with '%s' from (%d|%d)",
+                origin.getUID(),
+                target.getUID(),
+                taskToComplete.value,
+                taskToPerform.value,
+                originPosition.getX(),
+                originPosition.getY()
+        );
     }
 
     /**
@@ -82,15 +80,18 @@ public class TaskMessage implements LocalMessage, DirectedMessage {
         }
     }
 
-    @Override
-    public String toString() {
-        return String.format("%d asks %d to register task '%s' that can be served with '%s' from (%d|%d)",
-                origin.getUID(),
-                target.getUID(),
-                taskToComplete.value,
-                taskToPerform.value,
-                originPosition.getX(),
-                originPosition.getY()
-        );
+
+    /**
+     * @return String list of all {@link TaskType}s
+     */
+    public static ArrayList<String> getValidMessages() {
+        ArrayList<String> taskTypes = new ArrayList<>();
+
+        for (TaskType tt:
+                TaskType.values()) {
+            taskTypes.add(tt.value);
+        }
+
+        return taskTypes;
     }
 }

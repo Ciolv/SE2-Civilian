@@ -44,8 +44,58 @@ public abstract class Person extends Agent {
         ));
     }
 
+
     public String getName() {
         return name;
+    }
+
+    @Override
+    public void pluginUpdate() {
+        if (!removed) {
+            if (isEnqueued) {
+                return;
+            }
+
+            if (tasks.size() > 0) {
+                startToPerformTask();
+            } else {
+                remove();
+            }
+        }
+    }
+
+    @Override
+    public void receiveMessage(Message m) {
+        // It seems as if the simulation delivers a single message multiple times
+        // So we need to ensure, that we do not process the same message over and over again
+        // Otherwise, tasks could be finished without ever being performed
+        // Furthermore, there is no need to process messages, if the Person has no tasks left
+        if (!removed && !knownMessages.contains(m)) {
+            boolean isDirectedMessage =
+                    Arrays.stream(m.getClass().getInterfaces()).anyMatch(i -> i == DirectedMessage.class);
+
+            // Only messages that are directed to this Person should be processed and only of the TaskType matches
+            // If so, enqueue
+            if (isDirectedMessage) {
+                boolean isDirectedToThisTask = ((DirectedMessage) m).getTarget().equals(this);
+
+                // Even directed messages are delivered to every entity in range
+                // We do not need to handle messages, that are not directed to the instance a Person
+                // The check happens only here, because we do not know, whether targets of messages could change later on
+                if (isDirectedToThisTask) {
+
+                    // Checking the class type of the message happens at last, to ensure expandability.
+                    if (m instanceof CompletionTaskMessage) {
+                        taskCompleted(((CompletionTaskMessage) m).getCompletedTask(),
+                                ((CompletionTaskMessage) m).getExecutionTime(),
+                                (int) Math.round(((CompletionTaskMessage) m).getIndividualDuration())
+                        );
+                    }
+
+                    knownMessages.add(m);
+                }
+            }
+        }
     }
 
     /**
@@ -91,22 +141,6 @@ public abstract class Person extends Agent {
             return Arrays.stream(this.taskTypes).anyMatch(t -> t == taskType);
         } else {
             return false;
-        }
-    }
-
-
-    @Override
-    public void pluginUpdate() {
-        if (!removed) {
-            if (isEnqueued) {
-                return;
-            }
-
-            if (tasks.size() > 0) {
-                startToPerformTask();
-            } else {
-                remove();
-            }
         }
     }
 
@@ -299,40 +333,6 @@ public abstract class Person extends Agent {
             if (this instanceof Civilian) {
                 tasks.remove(0);
                 setSpeed(individualSpeed);
-            }
-        }
-    }
-
-    @Override
-    public void receiveMessage(Message m) {
-        // It seems as if the simulation delivers a single message multiple times
-        // So we need to ensure, that we do not process the same message over and over again
-        // Otherwise, tasks could be finished without ever being performed
-        // Furthermore, there is no need to process messages, if the Person has no tasks left
-        if (!removed && !knownMessages.contains(m)) {
-            boolean isDirectedMessage =
-                    Arrays.stream(m.getClass().getInterfaces()).anyMatch(i -> i == DirectedMessage.class);
-
-            // Only messages that are directed to this Person should be processed and only of the TaskType matches
-            // If so, enqueue
-            if (isDirectedMessage) {
-                boolean isDirectedToThisTask = ((DirectedMessage) m).getTarget().equals(this);
-
-                // Even directed messages are delivered to every entity in range
-                // We do not need to handle messages, that are not directed to the instance a Person
-                // The check happens only here, because we do not know, whether targets of messages could change later on
-                if (isDirectedToThisTask) {
-
-                    // Checking the class type of the message happens at last, to ensure expandability.
-                    if (m instanceof CompletionTaskMessage) {
-                        taskCompleted(((CompletionTaskMessage) m).getCompletedTask(),
-                                ((CompletionTaskMessage) m).getExecutionTime(),
-                                (int) Math.round(((CompletionTaskMessage) m).getIndividualDuration())
-                        );
-                    }
-
-                    knownMessages.add(m);
-                }
             }
         }
     }

@@ -26,7 +26,6 @@ public class CompletionTaskMessage implements DirectedMessage, LocalMessage {
         originPosition = new Point(origin.getPosition().getX(), origin.getPosition().getY());
     }
 
-
     public TaskType getCompletedTask() {
         return completedTask;
     }
@@ -35,13 +34,9 @@ public class CompletionTaskMessage implements DirectedMessage, LocalMessage {
         return target;
     }
 
-    public int getExecutionTime() {
-        return executionTime;
-    }
+    public int getExecutionTime() { return executionTime; }
 
-    public double getIndividualDuration() {
-        return individualDuration;
-    }
+    public double getIndividualDuration() { return individualDuration; }
 
     @Override
     public int getMaxRange() {
