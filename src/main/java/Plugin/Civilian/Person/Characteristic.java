@@ -1,7 +1,5 @@
 package Plugin.Civilian.Person;
 
-import Plugin.Task.TaskType;
-
 public enum Characteristic {
     SUSPICIOUS(0.4),
     CONFUSED(0.8),
@@ -11,19 +9,20 @@ public enum Characteristic {
     FAST(2),
     CALM(3.3),
     TARGET_ORIENTED(5),
-    BUSSY(2.5);
-
+    BUSY(2.5);
 
     public double value;
-    private Characteristic(double value){
+    Characteristic(double value){
         this.value=value;
     }
 
-    public double getValue() {
-        return value;
-    }
-
-    public static Characteristic fromValue(double value) {
+    /**
+     * Get a Characteristic based on its value
+     *
+     * @param value The value of the Characteristic to determine
+     * @return The Characteristic that matches the value, or null if there exists no matching Characteristic
+     */
+    public static  Characteristic fromValue(double value) {
         for (Characteristic type :
                 Characteristic.values()) {
             if (value == type.value) {
@@ -33,6 +32,12 @@ public enum Characteristic {
         return null;
     }
 
+    /**
+     * Get a Characteristic based on its string name
+     *
+     * @param name The string name of the Characteristic
+     * @return The Characteristic that matches the name, or null if there exists no matching Characteristic
+     */
     public static Characteristic fromName(String name) {
         for (Characteristic type :
                 Characteristic.values()) {

@@ -24,17 +24,6 @@ public class TaskMessage implements LocalMessage, DirectedMessage {
         fromString(messageContent);
     }
 
-    public static ArrayList<String> getValidMessages() {
-        ArrayList<String> messages = new ArrayList<>();
-
-        for (TaskType tt:
-                TaskType.values()) {
-            messages.add(tt.value);
-        }
-
-        return messages;
-    }
-
     public TaskType getTaskToComplete() {
         return taskToComplete;
     }
@@ -58,6 +47,27 @@ public class TaskMessage implements LocalMessage, DirectedMessage {
         return originPosition;
     }
 
+    /**
+     * @return String list of all {@link TaskType}s
+     */
+    public static ArrayList<String> getValidMessages() {
+        ArrayList<String> taskTypes = new ArrayList<>();
+
+        for (TaskType tt:
+                TaskType.values()) {
+            taskTypes.add(tt.value);
+        }
+
+        return taskTypes;
+    }
+
+    /**
+     * Set the {@link TaskMessage#taskToPerform} and {@link TaskMessage#taskToComplete} based on a {@link TaskType#value}
+     *
+     * The {@link TaskMessage#taskToComplete} will be set to the matching counterpart of {@link TaskMessage#taskToPerform}
+     *
+     * @param s The {@link TaskType#value} that should be set as {@link TaskMessage#taskToPerform}
+     */
     public void fromString(String s) {
         taskToPerform = TaskType.fromValue(s);
 

@@ -26,8 +26,14 @@ public class Task extends StaticEntity {
         this.duration = duration;
     }
 
-    public TaskType[] applicableTasksFromString(String s) {
-        this.taskType = TaskType.fromValue(s);
+    /**
+     * Get the {@link Task} from the string and its counterpart.
+     *
+     * @param task {@link TaskType#value} that the array should be based on
+     * @return The {@link Task} from the string and its counterpart.
+     */
+    public TaskType[] applicableTasksFromString(String task) {
+        this.taskType = TaskType.fromValue(task);
 
         if (taskType != null) {
             return new TaskType[]{
@@ -35,10 +41,10 @@ public class Task extends StaticEntity {
                     TaskType.getMatchingTask(taskType)
             };
         } else {
-            if (Arrays.stream(TaskType.values()).toList().contains(s)) {
-                CivilianPlugin.logger.warn(String.format("%s has not been implemented.", s));
+            if (Arrays.stream(TaskType.values()).toList().contains(task)) {
+                CivilianPlugin.logger.warn(String.format("%s has not been implemented.", task));
             } else {
-                CivilianPlugin.logger.error(String.format("%s is not a valid task!", s));
+                CivilianPlugin.logger.error(String.format("%s is not a valid task!", task));
             }
 
             return new TaskType[]{};
@@ -55,6 +61,12 @@ public class Task extends StaticEntity {
                 taskTypes).anyMatch(personTaskType -> tType == personTaskType));
     }
 
+    /**
+     * Validate whether the provided {@link TaskType} is applicable to this task
+     *
+     * @param taskType {@link TaskType} that should be validated for applicability.
+     * @return True if a the provided {@link TaskType} matches with any member of {@link Task#applicableTaskTypes}, False otherwise.
+     */
     public boolean taskIsApplicable(TaskType taskType) {
         return taskIsApplicable(new TaskType[] {taskType});
     }
@@ -63,17 +75,23 @@ public class Task extends StaticEntity {
         boolean isDirectedMessage =
                 Arrays.stream(m.getClass().getInterfaces()).anyMatch(i -> i == DirectedMessage.class);
 
-        // Only messages that are directed to this task should be performed and only of the TaskType matches.
-        // If so, enqueue.
+        // It seems as if the simulation delivers a single message multiple times
+        // So we need to ensure, that we do not process the same message over and over again
+        // Otherwise, tasks could be finished without ever being performed
         if (!knownMessages.contains(m) &&isDirectedMessage) {
+
+            // Only messages that are directed to this Task should be processed
             boolean isDirectedToThisTask = ((DirectedMessage)m).getTarget().equals(this);
             if (isDirectedToThisTask) {
                 if (m instanceof TaskMessage) {
                     TaskType toComplete = ((TaskMessage) m).getTaskToComplete();
                     TaskType toPerform = ((TaskMessage) m).getTaskToPerform();
 
+                    // Only if the message has a applicable TaskType it should be enqueued
                     if (toComplete.equals(taskType) || toPerform.equals(taskType)) {
                         enqueue((TaskMessage) m);
+
+                        // Logging
                         CivilianPlugin.logger.debug(String.format(
                                 "Registered task '%s' by %s '%d' looking for '%s' at Task '%d'",
                                 toPerform.value,
@@ -83,6 +101,7 @@ public class Task extends StaticEntity {
                                 this.getUID()
                         ));
                     } else {
+                        // Logging
                         CivilianPlugin.logger.error(
                                 String.format("'%s' cannot be served at this task. Valid TaskTypes are %s",
                                         ((TaskMessage) m).getTaskToComplete().value,
@@ -91,6 +110,7 @@ public class Task extends StaticEntity {
                         );
                     }
                 } else {
+                    // Logging
                     CivilianPlugin.logger.error(
                             String.format("'%s' can not be performed at this %s", m, this.getClass())
                     );
@@ -101,6 +121,9 @@ public class Task extends StaticEntity {
         }
     }
 
+    /**
+     * @return Comma separated string containing all applicable {@link TaskType#value}s
+     */
     private String applicableTaskTypeString() {
         List<String> tt = Arrays.stream(applicableTaskTypes).map(t -> t.value).collect(Collectors.toList());
 
@@ -114,8 +137,8 @@ public class Task extends StaticEntity {
      * @param message
      */
     private void enqueue(TaskMessage message) {
-        // Only enqueue if the person has an applicable {@link TaskType}.
-            queue.put(message, new TaskTimer(duration, ((Person)message.getOrigin()).getSpeedFactor()));
+        // Needs to be validated outside this method.
+        queue.put(message, new TaskTimer(duration, ((Person)message.getOrigin()).getSpeedFactor()));
     }
 
     /**
@@ -127,6 +150,13 @@ public class Task extends StaticEntity {
         return taskType;
     }
 
+    /**
+     * Process a {@link TaskMessage} that has no need for a counterpart message
+     *
+     * Provide messages that fulfill {@link TaskType#isSelfServing()}
+     *
+     * @param message The self-serving message that should be processed
+     */
     private void performSelfServingTask(TaskMessage message) {
         if (!usedMessages.contains(message)) {
             TaskTimer taskTimer = queue.get(message);
@@ -139,7 +169,7 @@ public class Task extends StaticEntity {
                             message.getOrigin(),
                             message.getTaskToPerform(),
                             taskTimer.getWaitingTime(),
-                            taskTimer.getIndividualDuration()));
+                            taskTimer.getExpectedDuration()));
 
                     queue.remove(message);
                 }
@@ -147,6 +177,13 @@ public class Task extends StaticEntity {
         }
     }
 
+    /**
+     * Try to process a {@link TaskMessage} that needs a counterpart message
+     *
+     * Provide messages that do not fulfill {@link TaskType#isSelfServing()}
+     *
+     * @param message The message that should be processed
+     */
     private void performNonSelfServingTask(TaskMessage message) {
         TaskTimer taskTimer = queue.get(message);
         if (taskTimer != null ) {
@@ -182,13 +219,13 @@ public class Task extends StaticEntity {
                                 message.getOrigin(),
                                 message.getTaskToComplete(),
                                 taskTimer.getWaitingTime(),
-                                taskTimer.getIndividualDuration()
+                                taskTimer.getExpectedDuration()
                         ));
                         getWorld().sendMessage(new CompletionTaskMessage(message.getOrigin(),
                                 partnerMessage.getOrigin(),
                                 partnerMessage.getTaskToComplete(),
                                 partnerTaskTimer.getWaitingTime(),
-                                partnerTaskTimer.getIndividualDuration()
+                                partnerTaskTimer.getExpectedDuration()
                         ));
 
                         queue.remove(message);

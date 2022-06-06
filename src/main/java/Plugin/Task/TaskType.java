@@ -1,5 +1,9 @@
 package Plugin.Task;
 
+import Plugin.Civilian.Person.Characteristic;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Nullable;
+
 public enum TaskType {
     WALKING("Walk"),
     CLEANING("Clean"),
@@ -10,11 +14,17 @@ public enum TaskType {
     TELL_DIRECTION("Tell direction");
 
     public String value;
-    private TaskType(String value){
+    TaskType(String value){
         this.value=value;
     }
 
-    public static TaskType fromValue(String value) {
+    /**
+     * Get a TaskType based on its value
+     *
+     * @param value The value of the TaskType to determine
+     * @return The TaskType that matches the value, or null if there exists no matching TaskType
+     */
+    public static @Nullable TaskType fromValue(String value) {
         for (TaskType type :
                 TaskType.values()) {
             if (value.equals(type.value)) {
@@ -24,7 +34,29 @@ public enum TaskType {
         return null;
     }
 
-    public static TaskType getMatchingTask(TaskType requestedType) {
+    /**
+     * Get a TaskType based on its string name
+     *
+     * @param name The string name of the TaskType
+     * @return The TaskType that matches the name, or null if there exists no matching TaskType
+     */
+    public static @Nullable TaskType fromName(String name) {
+        for (TaskType type :
+                TaskType.values()) {
+            if (name.equals(type.name())) {
+                return type;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Get the counterpart TaskType
+     *
+     * @param requestedType The TaskType whose counterpart is to determine
+     * @return The matching counterpart or null, if no counterpart exists
+     */
+    public static @Nullable TaskType getMatchingTask(TaskType requestedType) {
         switch (requestedType) {
             case SELL_TICKET -> {
                 return BUY_TICKET;
@@ -53,6 +85,13 @@ public enum TaskType {
         }
     }
 
+    /**
+     * Determine whether a TaskType is self-serving or not
+     *
+     * A self-serving TaskType is one, whose counterpart is the TaskType itself
+     *
+     * @return True if the TaskType is self-serving, false otherwise
+     */
     public boolean isSelfServing() {
         return this == getMatchingTask(this);
     }
