@@ -11,29 +11,26 @@ import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.plugin.P
 import static dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.AirportAgentSimulation.registerEntity;
 
 /**
- * This Class will furhter implement the Plugin interface provided by
+ * This class implements the Plugin interface provided by
  * https://github.com/Vincent200355/AirportAgentSimulation-Base/
  */
 public class CivilianPlugin implements Plugin {
     public static PluginLogger logger;
 
+    /**
+     * Perform all steps to make this plugin usable
+     */
     public void activate() {
         logger = AirportAgentSimulation.getLogger(this);
         registerPluginEntities();
     }
 
+    /**
+     * Register all entities, the simulation shall be able to use
+     */
     public void registerPluginEntities() {
 
-        try {
-            registerEntity(this, Task.class.getSimpleName(),Task.class, new ConfigurableAttribute[] {
-                    new ConfigurableAttribute("taskType", String.class),
-                    new ConfigurableAttribute("duration", Integer.class)
-            });
-        } catch (ConfigurationFormatException e) {
-            throw new RuntimeException(e);
-        }
-
-        // parameters
+        registerNonPersonEntities();
         registerPersonEntity(Civilian.class);
         registerPersonEntity(CleaningWorker.class);
         registerPersonEntity(Loader.class);
@@ -41,6 +38,24 @@ public class CivilianPlugin implements Plugin {
         registerPersonEntity(TerminalWorker.class);
     }
 
+    /**
+     * Register all entities, not extending {@link Person}, the simulation shall be able to use
+     */
+    private void registerNonPersonEntities() {
+        try {
+            // Register Task
+            registerEntity(this, Task.class.getSimpleName(),Task.class, new ConfigurableAttribute[] {
+                    new ConfigurableAttribute("taskType", String.class),
+                    new ConfigurableAttribute("duration", Integer.class)
+            });
+        } catch (ConfigurationFormatException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Register all entities, extending {@link Person}, the simulation shall be able to use
+     */
     public void registerPersonEntity(Class entityType) {
         if (entityType.getSuperclass() == Person.class) {
             try {
@@ -54,6 +69,5 @@ public class CivilianPlugin implements Plugin {
                 throw new RuntimeException(e);
             }
         }
-
     }
 }
