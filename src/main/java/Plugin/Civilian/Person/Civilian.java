@@ -1,9 +1,6 @@
 package Plugin.Civilian.Person;
 
 import Plugin.Task.TaskType;
-import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.geometry.Point;
-import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulation.entity.Entity;
-import jdk.jshell.spi.ExecutionControl;
 
 public class Civilian extends Person {
 
@@ -15,9 +12,23 @@ public class Civilian extends Person {
                 TaskType.ASK_FOR_DIRECTION,
                 TaskType.BUY_TICKET
         }, tasks, characteristics);
+
         throwLuggageDice();
     }
 
+    public boolean hasLuggage(){
+        return hasLuggage;
+    }
+
+    public boolean hasCabinLuggage(){
+        return hasCabinLuggage;
+    }
+
+    /**
+     * Decides randomly, whether the {@link Civilian#hasLuggage} property is true or false.
+     *
+     * Should only be used once, while instantiating the class.
+     */
     void throwLuggageDice() {
         double rand = Math.random();
         int bool= (int) Math.round(rand);
@@ -28,7 +39,4 @@ public class Civilian extends Person {
         }
     }
 
-    boolean hasLuggage(){
-        return hasLuggage;
-    }
 }

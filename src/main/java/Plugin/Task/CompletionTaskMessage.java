@@ -7,6 +7,15 @@ import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulati
 
 public class CompletionTaskMessage implements DirectedMessage, LocalMessage {
 
+    private Entity origin;
+    private Entity target;
+    private int maxRange = 1;
+    private Point originPosition;
+
+    private int executionTime;
+    private double individualDuration;
+    private TaskType completedTask;
+
     public CompletionTaskMessage(Entity origin, Entity target, TaskType completedTask,
                                  int executionTime, double individualDuration) {
         this.origin = origin;
@@ -17,15 +26,6 @@ public class CompletionTaskMessage implements DirectedMessage, LocalMessage {
         originPosition = new Point(origin.getPosition().getX(), origin.getPosition().getY());
     }
 
-    private Entity origin;
-    private Entity target;
-    private int maxRange = 1;
-    private Point originPosition;
-
-    private int executionTime;
-    private double individualDuration;
-    private TaskType completedTask;
-
     public TaskType getCompletedTask() {
         return completedTask;
     }
@@ -33,6 +33,10 @@ public class CompletionTaskMessage implements DirectedMessage, LocalMessage {
     public Entity getTarget() {
         return target;
     }
+
+    public int getExecutionTime() { return executionTime; }
+
+    public double getIndividualDuration() { return individualDuration; }
 
     @Override
     public int getMaxRange() {
@@ -49,16 +53,13 @@ public class CompletionTaskMessage implements DirectedMessage, LocalMessage {
         return originPosition;
     }
 
+    /**
+     * DO NOT USE
+     *
+     * There is no meaningful use case for a string {@link CompletionTaskMessage}
+     */
     @Override
     public void fromString(String s) {
         // Laaa leee luuu nur der Mann im Mond schaut zu 😅
-    }
-
-    public int getExecutionTime() {
-        return executionTime;
-    }
-
-    public double getIndividualDuration() {
-        return individualDuration;
     }
 }
