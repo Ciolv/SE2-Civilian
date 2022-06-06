@@ -3,14 +3,10 @@ package Plugin.Civilian.Person;
 import Plugin.Task.TaskType;
 
 public class TerminalWorker extends Person{
-    public TerminalWorker (){
-        super();
-        taskTypes = new TaskType[] {
+    public TerminalWorker (String name, String[] tasks, String[] characteristics){
+        super(name, new TaskType[] {
                 TaskType.TELL_DIRECTION,
                 TaskType.SELL_TICKET
-        };
-
-        int taskIndex = (int)Math.random()*taskTypes.length;
-        tasks.add(taskTypes[taskIndex]);
+        }, tasks, characteristics);
     }
 }

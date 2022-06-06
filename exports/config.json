@@ -1,26 +1,10 @@
 {
   "seed": 0,
-  "height": 42,
-  "width": 50,
+  "height": 500,
+  "width": 500,
   "placedEntities": [
     {
-      "type": "entrance",
-      "position": [
-        14,
-        13
-      ],
-      "width": 42,
-      "height": 42,
-      "generates": [
-        {
-          "type": "passenger",
-          "generationRate": 258
-        }
-      ],
-      "pluginAttributes": {}
-    },
-    {
-      "type": "officer",
+      "type": "Civilian",
       "position": [
         14,
         13
@@ -28,7 +12,149 @@
       "width": 0,
       "height": 0,
       "generates": [],
-      "pluginAttributes": {}
+      "pluginAttributes": {
+        "name": "Alena",
+        "tasks": [
+          "Ask for direction",
+          "Buy ticket"
+        ]
+      }
+    },
+    {
+      "type": "TerminalWorker",
+      "position": [
+        14,
+        13
+      ],
+      "width": 0,
+      "height": 0,
+      "generates": [],
+      "pluginAttributes": {
+        "name": "Lili",
+        "tasks": [
+          "Tell direction"
+        ]
+      }
+    },
+    {
+      "type": "TerminalWorker",
+      "position": [
+        100,
+        70
+      ],
+      "width": 0,
+      "height": 0,
+      "generates": [],
+      "pluginAttributes": {
+        "name": "Berd",
+        "tasks": [
+          "Sell ticket"
+        ]
+      }
+    },
+    {
+      "type": "CleaningWorker",
+      "position": [
+        14,
+        13
+      ],
+      "width": 0,
+      "height": 0,
+      "generates": [],
+      "pluginAttributes": {
+        "name": "Bob",
+        "tasks": [
+          "Clean"
+        ]
+      }
+    },
+    {
+      "type": "CleaningWorker",
+      "position": [
+        14,
+        13
+      ],
+      "width": 0,
+      "height": 0,
+      "generates": [],
+      "pluginAttributes": {
+        "name": "Allan",
+        "tasks": [
+          "Clean"
+        ]
+      }
+    },
+    {
+      "type": "LuggageDistributor",
+      "position": [
+        14,
+        13
+      ],
+      "width": 0,
+      "height": 0,
+      "generates": [],
+      "pluginAttributes": {
+        "name": "Annie",
+        "tasks": [
+          "Transport luggage"
+        ]
+      }
+    },
+    {
+      "type": "Task",
+      "position": [
+        20,
+        10
+      ],
+      "width": 0,
+      "height": 0,
+      "generates": [],
+      "pluginAttributes": {
+        "taskType": "Ask for direction",
+        "duration": 1
+      }
+    },
+    {
+      "type": "Task",
+      "position": [
+        90,
+        70
+      ],
+      "width": 0,
+      "height": 0,
+      "generates": [],
+      "pluginAttributes": {
+        "taskType": "Sell ticket",
+        "duration": 1
+      }
+    },
+    {
+      "type": "Task",
+      "position": [
+        40,
+        10
+      ],
+      "width": 0,
+      "height": 0,
+      "generates": [],
+      "pluginAttributes": {
+        "taskType": "Clean",
+        "duration": 1
+      }
+    },
+    {
+      "type": "Task",
+      "position": [
+        5,
+        7
+      ],
+      "width": 0,
+      "height": 0,
+      "generates": [],
+      "pluginAttributes": {
+        "taskType": "Transport luggage",
+        "duration": 1
+      }
     }
   ]
 }

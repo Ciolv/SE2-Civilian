@@ -1,8 +1,14 @@
 package Plugin;
 
+import Plugin.Civilian.Person.*;
+import Plugin.Task.Task;
 import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.AirportAgentSimulation;
+import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.config.ConfigurableAttribute;
+import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.config.ConfigurationFormatException;
 import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.logging.PluginLogger;
 import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.plugin.Plugin;
+
+import static dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.AirportAgentSimulation.registerEntity;
 
 /**
  * This Class will furhter implement the Plugin interface provided by
@@ -10,13 +16,44 @@ import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.plugin.P
  */
 public class CivilianPlugin implements Plugin {
     public static PluginLogger logger;
-    @Override
+
     public void activate() {
         logger = AirportAgentSimulation.getLogger(this);
+        registerPluginEntities();
     }
 
-    // Maybe already deprecated? No `loadEntityTypes` function found in the simulation...
-    public void loadEntityTypes() {
+    public void registerPluginEntities() {
+
+        try {
+            registerEntity(this, Task.class.getSimpleName(),Task.class, new ConfigurableAttribute[] {
+                    new ConfigurableAttribute("taskType", String.class),
+                    new ConfigurableAttribute("duration", Integer.class)
+            });
+        } catch (ConfigurationFormatException e) {
+            throw new RuntimeException(e);
+        }
+
+        // parameters
+        registerPersonEntity(Civilian.class);
+        registerPersonEntity(CleaningWorker.class);
+        registerPersonEntity(Loader.class);
+        registerPersonEntity(LuggageDistributor.class);
+        registerPersonEntity(TerminalWorker.class);
+    }
+
+    public void registerPersonEntity(Class entityType) {
+        if (entityType.getSuperclass() == Person.class) {
+            try {
+                registerEntity(this, entityType.getSimpleName(), entityType, new ConfigurableAttribute[] {
+                        new ConfigurableAttribute("name", String.class),
+                        new ConfigurableAttribute("tasks", String[].class),
+                        new ConfigurableAttribute("characteristics", String[].class, new String[]{})
+                });
+                logger.info(String.format("Registered entity %s", entityType.getSimpleName()));
+            } catch (ConfigurationFormatException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
     }
 }
