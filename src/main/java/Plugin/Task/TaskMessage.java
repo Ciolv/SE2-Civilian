@@ -14,8 +14,8 @@ public class TaskMessage implements LocalMessage, DirectedMessage {
     private int maxRange = 1;
     private Point originPosition;
 
-    static TaskType taskToComplete;
-    static TaskType taskToPerform;
+    private TaskType taskToComplete;
+    private TaskType taskToPerform;
 
     public TaskMessage(Entity origin, Entity target, String messageContent) {
         this.origin = origin;
@@ -35,10 +35,10 @@ public class TaskMessage implements LocalMessage, DirectedMessage {
         return messages;
     }
 
-    public static TaskType getTaskToComplete() {
+    public TaskType getTaskToComplete() {
         return taskToComplete;
     }
-    public static TaskType getTaskToPerform() {
+    public TaskType getTaskToPerform() {
         return taskToPerform;
     }
 
@@ -64,42 +64,28 @@ public class TaskMessage implements LocalMessage, DirectedMessage {
 
     @Override
     public void fromString(String s) {
-        switch (s) {
-            case "Walk" -> {
-                taskToPerform = TaskType.WALKING;
-                taskToComplete = TaskType.WALKING;
-            }
-            case "Clean" -> {
-                taskToPerform = TaskType.CLEANING;
-                taskToComplete = TaskType.CLEANING;
-            }
-            case "Transport luggage" -> {
-                taskToPerform = TaskType.TRANSPORTING_LUGGAGE;
-                taskToComplete = TaskType.TRANSPORTING_LUGGAGE;
-            }
-            case "Buy Ticket" -> {
-                taskToPerform = TaskType.BUY_TICKET;
-                taskToComplete = TaskType.SELL_TICKET;
-            }
-            case "Sell Ticket" -> {
-                taskToPerform = TaskType.SELL_TICKET;
-                taskToComplete = TaskType.BUY_TICKET;
-            }
-            case "Ask for direction" -> {
-                taskToPerform = TaskType.ASK_FOR_DIRECTION;
-                taskToComplete = TaskType.TELL_DIRECTION;
-            }
-            case "Tell direction" -> {
-                taskToPerform = TaskType.TELL_DIRECTION;
-                taskToComplete = TaskType.ASK_FOR_DIRECTION;
-            }
-            default -> {
-                if (getValidMessages().contains(s)) {
-                    CivilianPlugin.logger.warn(String.format("%s has not been implemented.", s));
-                } else {
-                    CivilianPlugin.logger.error(String.format("%s is not a valid message!", s));
-                }
+        taskToPerform = TaskType.fromValue(s);
+
+        if (taskToPerform != null) {
+            taskToComplete = TaskType.getMatchingTask(taskToPerform);
+        }else {
+            if (getValidMessages().contains(s)) {
+                CivilianPlugin.logger.warn(String.format("%s has not been implemented.", s));
+            } else {
+                CivilianPlugin.logger.error(String.format("%s is not a valid message!", s));
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%d asks %d to register task '%s' that can be served with '%s' from (%d|%d)",
+                origin.getUID(),
+                target.getUID(),
+                taskToComplete.value,
+                taskToPerform.value,
+                originPosition.getX(),
+                originPosition.getY()
+        );
     }
 }

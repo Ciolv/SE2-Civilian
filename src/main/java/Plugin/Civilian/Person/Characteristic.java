@@ -1,5 +1,7 @@
 package Plugin.Civilian.Person;
 
+import Plugin.Task.TaskType;
+
 public enum Characteristic {
     SUSPICIOUS(0.25),
     CONFUSED(0.50),
@@ -15,6 +17,16 @@ public enum Characteristic {
 
     public double getValue() {
         return value;
+    }
+
+    public static Characteristic fromValue(double value) {
+        for (Characteristic type :
+                Characteristic.values()) {
+            if (value == type.value) {
+                return type;
+            }
+        }
+        return null;
     }
 }
 

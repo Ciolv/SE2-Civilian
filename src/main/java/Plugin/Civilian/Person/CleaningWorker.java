@@ -1,5 +1,6 @@
 package Plugin.Civilian.Person;
 
+import Plugin.CivilianPlugin;
 import Plugin.Task.Task;
 import Plugin.Task.TaskType;
 import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.geometry.Point;
@@ -9,12 +10,12 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CleaningWorker extends Person {
-    public CleaningWorker(Point position) {
-        super(position);
+    public CleaningWorker(String name, String[] tasks) {
+        super(name);
         taskTypes = new TaskType[] {
                 TaskType.CLEANING
         };
 
-        tasks.addAll(generateTaskQueue(TaskType.CLEANING, 20));
+        addTaskList(tasks);
     }
 }

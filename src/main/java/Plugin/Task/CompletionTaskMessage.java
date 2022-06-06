@@ -24,7 +24,7 @@ public class CompletionTaskMessage implements DirectedMessage, LocalMessage {
 
     private int executionTime;
     private double individualDuration;
-    static TaskType completedTask;
+    private TaskType completedTask;
 
     public TaskType getCompletedTask() {
         return completedTask;

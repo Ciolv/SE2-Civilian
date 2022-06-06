@@ -3,23 +3,46 @@ package Plugin.Task;
 import Plugin.Civilian.Person.Person;
 import Plugin.CivilianPlugin;
 import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulation.entity.StaticEntity;
+import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulation.message.DirectedMessage;
 import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulation.message.Message;
 
-import java.awt.*;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Dictionary;
-import java.util.stream.Stream;
+import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Task extends StaticEntity {
-    String Name;
     int duration;
-    Dictionary<TaskMessage, TaskTimer> queue;
-    Point position;
+    Dictionary<TaskMessage, TaskTimer> queue = new Hashtable<>();
     TaskType taskType;
     TaskType[] applicableTaskTypes;
+    private ArrayList<Message> knownMessages = new ArrayList<>();
 
+    public Task(String taskType, Integer duration) {
+        applicableTaskTypes = applicableTasksFromString(taskType);
+        if (applicableTaskTypes.length > 0) {
+            this.taskType = applicableTaskTypes[0];
+        }
+        this.duration = duration;
+    }
 
+    public TaskType[] applicableTasksFromString(String s) {
+        this.taskType = TaskType.fromValue(s);
+
+        if (taskType != null) {
+            return new TaskType[]{
+                    taskType,
+                    TaskType.getMatchingTask(taskType)
+            };
+        } else {
+            if (Arrays.stream(TaskType.values()).toList().contains(s)) {
+                CivilianPlugin.logger.warn(String.format("%s has not been implemented.", s));
+            } else {
+                CivilianPlugin.logger.error(String.format("%s is not a valid task!", s));
+            }
+
+            return new TaskType[]{};
+        }
+    }
 
     /**
      * Validate whether a {@link TaskType} list contains any task type applicable for this task or not.
@@ -35,25 +58,68 @@ public class Task extends StaticEntity {
         return taskIsApplicable(new TaskType[] {taskType});
     }
 
-    @Override
     public void receiveMessage(Message m) {
-        if (m instanceof TaskMessage) {
-            if (((TaskMessage)m).getTaskToComplete() == taskType ||
-                    ((TaskMessage)m).getTaskToPerform() == taskType) {
-                enqueue((TaskMessage) m);
+        boolean isDirectedMessage =
+                Arrays.stream(m.getClass().getInterfaces()).anyMatch(i -> i == DirectedMessage.class);
+
+        // Only messages that are directed to this task should be performed and only of the TaskType matches.
+        // If so, enqueue.
+        if (!knownMessages.contains(m) &&isDirectedMessage) {
+            boolean isDirectedToThisTask = ((DirectedMessage)m).getTarget().equals(this);
+            if (isDirectedToThisTask) {
+                if (m instanceof TaskMessage) {
+                    TaskType toComplete = ((TaskMessage) m).getTaskToComplete();
+                    TaskType toPerform = ((TaskMessage) m).getTaskToPerform();
+
+                    if (toComplete.equals(taskType) || toPerform.equals(taskType)) {
+                        enqueue((TaskMessage) m);
+                        CivilianPlugin.logger.debug(String.format(
+                                "Registered task '%s' by %s '%d' looking for '%s' at Task '%d'",
+                                toPerform.value,
+                                m.getOrigin().getClass().getSimpleName(),
+                                m.getOrigin().getUID(),
+                                toComplete.value,
+                                this.getUID()
+                        ));
+                    } else {
+                        CivilianPlugin.logger.error(
+                                String.format("'%s' cannot be served at this task. Valid TaskTypes are %s",
+                                        ((TaskMessage) m).getTaskToComplete().value,
+                                        applicableTaskTypeString()
+                                )
+                        );
+                    }
+                } else {
+                    CivilianPlugin.logger.error(
+                            String.format("'%s' can not be performed at this %s", m, this.getClass())
+                    );
+                }
             } else {
-                CivilianPlugin.logger.error(
-                        String.format("%s cannot be served at this task. Valid TaskTypes are %s",
-                                ((TaskMessage) m).getTaskToComplete().name(),
-                                applicableTaskTypes.toString()
-                        )
-                );
+                if (m instanceof TaskMessage) {
+                    CivilianPlugin.logger.debug(
+                            String.format("%s '%d' is not the target of the message directed to  %s '%d'",
+                                    this.getClass().getSimpleName(),
+                                    this.getUID(),
+                                    ((DirectedMessage) m).getTarget().getClass().getSimpleName(),
+                                    ((DirectedMessage) m).getTarget().getUID()
+                            ));
+                } else {
+                    CivilianPlugin.logger.debug(
+                            String.format("'%s' can not be performed at this %s", m, this.getClass())
+                    );
+                }
+
             }
-        } else {
-            CivilianPlugin.logger.error(
-                    String.format("'%s' can not be performed at this %s", m.toString(), this.getClass())
-            );
+            knownMessages.add(m);
         }
+    }
+
+    private String applicableTaskTypeString() {
+        List<String> tt = Arrays.stream(applicableTaskTypes).map(t -> t.value).collect(Collectors.toList());
+
+        String taskTypeString = String.join("', '", tt);
+
+        return "'" + taskTypeString + "'";
     }
 
     /**
@@ -76,43 +142,66 @@ public class Task extends StaticEntity {
 
     private void performSelfServingTask(TaskMessage message) {
         TaskTimer taskTimer = queue.get(message);
-        taskTimer.decreaseDuration();
+        if (taskTimer != null ) {
+            taskTimer.decreaseDuration();
 
-        if (taskTimer.durationExceeded()) {
-            getWorld().sendMessage(new CompletionTaskMessage(message.getTarget(),
-                    message.getOrigin(),
-                    message.getTaskToPerform(),
-                    taskTimer.getWaitingTime(),
-                    taskTimer.getIndividualDuration()));
+            if (taskTimer.durationExceeded()) {
+                getWorld().sendMessage(new CompletionTaskMessage(message.getOrigin(),
+                        message.getOrigin(),
+                        message.getTaskToPerform(),
+                        taskTimer.getWaitingTime(),
+                        taskTimer.getIndividualDuration()));
 
-            queue.remove(message);
+                queue.remove(message);
+            }
         }
     }
 
     private void performNonSelfServingTask(TaskMessage message) {
         TaskTimer taskTimer = queue.get(message);
-        taskTimer.decreaseDuration();
+        if (taskTimer != null ) {
+            taskTimer.decreaseDuration();
 
-        Stream<TaskMessage> partnerMessageStream = Collections.list(queue.keys()).stream().filter(
-                taskMessage -> taskMessage.getTaskToPerform() == message.getTaskToComplete()
-        ).limit(1);
+//            Iterator<TaskMessage> iterator = queue.keys().asIterator();
+//            TaskMessage partnerMessage = null;
+//
+//            while (iterator.hasNext()) {
+//                TaskMessage taskMessage = iterator.next();
+//                TaskType toPerform = taskMessage.getTaskToPerform();
+//                TaskType searched = message.getTaskToComplete();
+//
+//                if (toPerform.equals(searched)) {
+//                    partnerMessage = taskMessage;
+//                    break;
+//                }
+//            }
 
-        if (partnerMessageStream.count() > 0) {
-            TaskMessage partnerMessage = partnerMessageStream.findFirst().get();
-            if (taskTimer.durationExceeded()) {
-                getWorld().sendMessage(new CompletionTaskMessage(message.getTarget(),
-                        message.getOrigin(),
-                        message.getTaskToPerform(),
-                        taskTimer.getWaitingTime(),
-                        taskTimer.getIndividualDuration()));
-                getWorld().sendMessage(new CompletionTaskMessage(partnerMessage.getTarget(),
-                        partnerMessage.getOrigin(),
-                        partnerMessage.getTaskToPerform(),
-                        taskTimer.getWaitingTime(),
-                        taskTimer.getIndividualDuration()));
+            // Find first message that matches the TaskType required to complete this message.
+            List<TaskMessage> matchingMessages = Collections.list(
+                    queue.keys()).stream().filter(
+                    taskMessage -> message.getTaskToComplete().equals(taskMessage.getTaskToPerform())
+            ).toList();
+            TaskMessage partnerMessage = matchingMessages.size() > 0 ? matchingMessages.get(0) : null;
 
-                queue.remove(message);
-                queue.remove(partnerMessage);
+            // If one is found, let them both complete their work
+            if (partnerMessage != null) {
+                if (taskTimer.durationExceeded()) {
+                    getWorld().sendMessage(new CompletionTaskMessage(partnerMessage.getOrigin(),
+                            message.getOrigin(),
+                            partnerMessage.getTaskToComplete(),
+                            taskTimer.getWaitingTime(),
+                            taskTimer.getIndividualDuration()
+                    ));
+                    getWorld().sendMessage(new CompletionTaskMessage(message.getOrigin(),
+                            partnerMessage.getOrigin(),
+                            message.getTaskToComplete(),
+                            taskTimer.getWaitingTime(),
+                            taskTimer.getIndividualDuration()
+                    ));
+
+                    queue.remove(message);
+                    queue.remove(partnerMessage);
+                }
             }
         }
     }
@@ -134,7 +223,6 @@ public class Task extends StaticEntity {
      * As many consumers as possible means, that if the number of consumers in the queue is higher than the number
      * of producers, not all consumers can be served.
      */
-    @Override
     public void pluginUpdate() {
         increaseRoundCounter();
 

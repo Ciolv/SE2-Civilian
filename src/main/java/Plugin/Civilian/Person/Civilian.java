@@ -10,16 +10,14 @@ public class Civilian extends Person {
     boolean hasCabinLuggage;
     boolean hasLuggage;
 
-    public Civilian(Point position) {
-        super(position);
-        throwLuggageDice();
-        taskTypes = new TaskType[] {
+    public Civilian(String name, String[] tasks) {
+        super(name);
+        taskTypes =  new TaskType[] {
                 TaskType.ASK_FOR_DIRECTION,
                 TaskType.BUY_TICKET
         };
-
-        int taskIndex = (int)(Math.random() * 2 * getSpeedFactor());
-        tasks.add(taskTypes[taskIndex]);
+        addTaskList(tasks);
+        throwLuggageDice();
     }
 
     void throwLuggageDice() {

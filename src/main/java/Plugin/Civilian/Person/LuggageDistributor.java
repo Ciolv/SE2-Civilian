@@ -7,12 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LuggageDistributor extends Person {
-    public LuggageDistributor(Point position) {
-        super(position);
+    public LuggageDistributor(String name, String[] tasks) {
+        super(name);
         taskTypes = new TaskType[] {
                 TaskType.TRANSPORTING_LUGGAGE
         };
-
-        generateTaskQueue(TaskType.TRANSPORTING_LUGGAGE, 20);
+        addTaskList(tasks);
     }
 }
