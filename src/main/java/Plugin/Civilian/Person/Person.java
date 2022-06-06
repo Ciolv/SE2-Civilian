@@ -23,11 +23,16 @@ public abstract class Person extends Agent {
     private boolean removed = false;
     private ArrayList<Message> knownMessages = new ArrayList<>();
 
-
-    public Person(String name) {
+    public Person(String name, TaskType[] taskTypes, String[] taskList, String[] characteristics) {
         this.name = name;
-        buildCharacter();
+        this.taskTypes = taskTypes;
+        if (characteristics.length == 0) {
+            buildCharacter();
+        } else {
+            buildCharacter(characteristics);
+        }
         calculateMovementSpeed();
+        addTaskList(taskList);
 
         CivilianPlugin.logger.info(String.format(
                 "%s (%s, uid:'%d') entered the airport.",
@@ -116,6 +121,12 @@ public abstract class Person extends Agent {
         setSpeed(individualSpeed);
     }
 
+    void buildCharacter(String[] characteristics) {
+        this.characteristics = new Characteristic[characteristics.length];
+        for (int i = 0; i < characteristics.length; i++) {
+            this.characteristics[i] = Characteristic.fromName(characteristics[i]);
+        }
+    }
     void buildCharacter() {
         int characteristicCount = (int)(Math.random()*Characteristic.values().length);
 

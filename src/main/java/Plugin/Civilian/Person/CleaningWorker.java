@@ -10,12 +10,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CleaningWorker extends Person {
-    public CleaningWorker(String name, String[] tasks) {
-        super(name);
-        taskTypes = new TaskType[] {
+    public CleaningWorker(String name, String[] tasks, String[] characteristics) {
+        super(name, new TaskType[] {
                 TaskType.CLEANING
-        };
-
-        addTaskList(tasks);
+        }, tasks, characteristics);
     }
 }

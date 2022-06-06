@@ -10,13 +10,11 @@ public class Civilian extends Person {
     boolean hasCabinLuggage;
     boolean hasLuggage;
 
-    public Civilian(String name, String[] tasks) {
-        super(name);
-        taskTypes =  new TaskType[] {
+    public Civilian(String name, String[] tasks, String[] characteristics) {
+        super(name, new TaskType[] {
                 TaskType.ASK_FOR_DIRECTION,
                 TaskType.BUY_TICKET
-        };
-        addTaskList(tasks);
+        }, tasks, characteristics);
         throwLuggageDice();
     }
 

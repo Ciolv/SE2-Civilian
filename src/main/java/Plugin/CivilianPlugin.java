@@ -39,8 +39,6 @@ public class CivilianPlugin implements Plugin {
         registerPersonEntity(Loader.class);
         registerPersonEntity(LuggageDistributor.class);
         registerPersonEntity(TerminalWorker.class);
-
-
     }
 
     public void registerPersonEntity(Class entityType) {
@@ -48,7 +46,8 @@ public class CivilianPlugin implements Plugin {
             try {
                 registerEntity(this, entityType.getSimpleName(), entityType, new ConfigurableAttribute[] {
                         new ConfigurableAttribute("name", String.class),
-                        new ConfigurableAttribute("tasks", String[].class)
+                        new ConfigurableAttribute("tasks", String[].class),
+                        new ConfigurableAttribute("characteristics", String[].class, new String[]{})
                 });
                 logger.info(String.format("Registered entity %s", entityType.getSimpleName()));
             } catch (ConfigurationFormatException e) {
