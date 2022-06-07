@@ -1,6 +1,5 @@
 package Plugin.Civilian.Person;
 
-import Plugin.CivilianPlugin;
 import Plugin.Task.Task;
 import Plugin.Task.TaskMessage;
 import Plugin.Task.TaskType;
@@ -104,15 +103,15 @@ public class Civilian extends Person {
      */
     private void taskListCleaning() {
         cleanLuggageDrop();
-        cleanTicketingIssur(TaskType.REQUEST_SECURITY_CHECK);
-        cleanTicketingIssur(TaskType.REQUEST_BOARDING);
+        cleanTicketingIssue(TaskType.REQUEST_SECURITY_CHECK);
+        cleanTicketingIssue(TaskType.REQUEST_BOARDING);
     }
     
     /**
      * Ensures, that the civilian first buys a ticket and performs the given {@link TaskType} afterwards
      * @param toPerformAfter The task to perform only after a ticket was bought
      */
-    private void cleanTicketingIssur(TaskType toPerformAfter) {
+    private void cleanTicketingIssue(TaskType toPerformAfter) {
         // Only civilians with a ticket can perform a security check
         boolean hasTaskToPerformFirst = tasks.stream().anyMatch(t -> t.equals(toPerformAfter));
         if (hasTaskToPerformFirst && !hasTicket) {
@@ -153,51 +152,6 @@ public class Civilian extends Person {
             }
         }
     }
-
-//    /**
-//     * Ensures, that the civilian first buys a ticket and performs the boarding afterwards
-//     */
-//    private void cleanBoarding() {
-//        // Only civilians with a ticket can perform a security check
-//        boolean hasBoardingTask = tasks.stream().anyMatch(t -> t.equals(TaskType.REQUEST_BOARDING));
-//        if (hasBoardingTask && !hasTicket) {
-//            int boardingTask = tasks.indexOf(TaskType.REQUEST_BOARDING);
-//            boolean hasBuyTicket = tasks.stream().anyMatch(t -> t.equals(TaskType.BUY_TICKET));
-//
-//            // If the person will
-//            if (!hasBuyTicket) {
-//                // Let the civilian perform the next task, if it initially would request a security check
-//                if (boardingTask == 0) {
-//                    isEnqueued = false;
-//
-//                    // insert BUY_TICKET at position 0
-//                    TaskType[] newTaskTypes = new TaskType[tasks.size() + 1];
-//                    newTaskTypes[0] = TaskType.BUY_TICKET;
-//                    arraycopy(tasks, 0, newTaskTypes, 1, tasks.size());
-//                    tasks = Arrays.stream(newTaskTypes).toList();
-//                } else {
-//                    // insert BUY_TICKET right before REQUEST_SECURITY_CHECK
-//                    TaskType[] newTaskTypes = new TaskType[tasks.size() + 1];
-//                    arraycopy(tasks, 0, newTaskTypes, 0, boardingTask);
-//                    newTaskTypes[boardingTask] = TaskType.BUY_TICKET;
-//                    arraycopy(tasks, boardingTask, newTaskTypes, boardingTask + 1, tasks.size() - boardingTask);
-//                    tasks = Arrays.stream(newTaskTypes).toList();
-//                }
-//            } else {
-//                int buyTicketIndex = tasks.indexOf(TaskType.BUY_TICKET);
-//                if (buyTicketIndex > boardingTask) {
-//                    // Swap task order
-//                    tasks.set(boardingTask, TaskType.BUY_TICKET);
-//                    tasks.set(buyTicketIndex, TaskType.REQUEST_BOARDING);
-//
-//                    // Let the person perform the next task
-//                    if (boardingTask == 0) {
-//                        isEnqueued = false;
-//                    }
-//                }
-//            }
-//        }
-//    }
 
     /**
      * Ensures, that the {@link Civilian} never tries to drop luggage, when it does not carra any

@@ -12,6 +12,8 @@ public enum TaskType {
     PERFORM_BOARDING("Perform boarding"),
     DROP_LUGGAGE("Drop luggage"),
     TAKE_LUGGAGE("Take luggage"),
+    REQUEST_TICKET_CHECK("Request ticket check"),
+    PERFORM_TICKET_CHECK("Perform ticket check"),
     REQUEST_SECURITY_CHECK("Request security check"),
     PERFORM_SECURITY_CHECK("Perform security check");
 
@@ -92,6 +94,15 @@ public enum TaskType {
             }
             case REQUEST_SECURITY_CHECK -> {
                 return PERFORM_SECURITY_CHECK;
+            }
+            case PERFORM_SECURITY_CHECK -> {
+                return REQUEST_SECURITY_CHECK;
+            }
+            case REQUEST_TICKET_CHECK -> {
+                return PERFORM_TICKET_CHECK;
+            }
+            case PERFORM_TICKET_CHECK -> {
+                return REQUEST_TICKET_CHECK;
             }
             default -> {
                 return null;
