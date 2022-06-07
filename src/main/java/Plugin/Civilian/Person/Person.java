@@ -11,6 +11,7 @@ import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulati
 import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulation.message.Message;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class Person extends Agent {
     private String name;
@@ -203,21 +204,21 @@ public abstract class Person extends Agent {
         Collection<Entity> entities = getWorld().getEntities();
 
         // Get all tasks in the world that provide the given TaskType
-        List<Entity> applicableEntities = entities.stream().filter(
+        List<Task> applicableEntities = entities.stream().filter(
                 entity -> entity instanceof Task && ((Task)entity).taskIsApplicable(type)
-        ).toList();
+        ).map(e -> (Task)e).toList();
 
         double smallestDistance = Double.MAX_VALUE;
         Task closestTask = null;
 
         // Find the Task that is closest
-        for (Entity entity:
+        for (Task task:
              applicableEntities) {
-            double distance = this.getPosition().getDistance(entity.getPosition());
+            double distance = this.getPosition().getDistance(task.getPosition()) - task.getRange();
 
             if (smallestDistance > distance) {
                 smallestDistance = distance;
-                closestTask = ((Task)entity);
+                closestTask = task;
             }
         }
 
@@ -239,8 +240,8 @@ public abstract class Person extends Agent {
      * @param target The {@link Entity} that shall be the message's target
      * @param message The message that shall be delivered.
      */
-    private void sendTaskMessage(Entity target, String message) {
-        if(this.getPosition().equals(target.getPosition())){
+    private void sendTaskMessage(Task target, String message) {
+        if(this.getPosition().getDistance(target.getPosition()) <= target.getRange()){
             TaskMessage pMessage =  new TaskMessage(this, target, message);
             getWorld().sendMessage(pMessage);
         }
@@ -251,7 +252,7 @@ public abstract class Person extends Agent {
      */
     private void startToPerformTask() {
         TaskType task = tasks.get(0);
-        Entity entity = getClosestTaskForType(task);
+        Task entity = getClosestTaskForType(task);
 
         // Only perform actions, if a matching task exists and the Person is located at this task
         if (entity != null) {
@@ -291,15 +292,23 @@ public abstract class Person extends Agent {
      * @param target The target of this instance
      * @return True if the instance is at the same position as the entity, false otherwise
      */
-    private boolean walking(Entity target) {
-        double distance = this.getPosition().getDistance(target.getPosition());
+    private boolean walking(Task target) {
+        double distance = this.getPosition().getDistance(target.getPosition()) - target.getRange() + 1;
 
-        // Check if the Persons position matches the one of the target
-        if (distance > target.getHeight() &&
-                distance > target.getWidth()) {
-            this.turn(target.getPosition());
-
-            return true;
+        // We can not walk into solid objects, but into non-solid objects
+        if (!target.isSolid()) {
+            // Walk until the target is in range
+            if (distance > 0) {
+                turn(target.getPosition());
+                return true;
+            }
+        } else {
+            // Walk until the target is in range, but stop walking, if we can not get any closer to the target
+            if (distance > target.getHeight() &&
+                    distance > target.getWidth()) {
+                turn(target.getPosition());
+                return true;
+            }
         }
 
         return false;

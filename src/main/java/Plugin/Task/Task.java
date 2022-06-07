@@ -15,16 +15,20 @@ public class Task extends StaticEntity {
     Dictionary<TaskMessage, TaskTimer> queue = new Hashtable<>();
     TaskType taskType;
     TaskType[] applicableTaskTypes;
+    private int range;
     private ArrayList<Message> knownMessages = new ArrayList<>();
     private ArrayList<Message> usedMessages = new ArrayList<>();
 
-    public Task(String taskType, Integer duration) {
+    public Task(String taskType, Integer duration, Integer range) {
         applicableTaskTypes = applicableTasksFromString(taskType);
         if (applicableTaskTypes.length > 0) {
             this.taskType = applicableTaskTypes[0];
         }
         this.duration = duration;
+        this.range = range;
     }
+
+    public int getRange() { return range; }
 
     /**
      * Performs task execution for all producers and as many consumers as possible.
@@ -182,7 +186,9 @@ public class Task extends StaticEntity {
                             message.getOrigin(),
                             message.getTaskToPerform(),
                             taskTimer.getWaitingTime(),
-                            taskTimer.getExpectedDuration()));
+                            taskTimer.getExpectedDuration(),
+                            range
+                    ));
 
                     queue.remove(message);
                 }
@@ -232,13 +238,15 @@ public class Task extends StaticEntity {
                                 message.getOrigin(),
                                 message.getTaskToComplete(),
                                 taskTimer.getWaitingTime(),
-                                taskTimer.getExpectedDuration()
+                                taskTimer.getExpectedDuration(),
+                                range
                         ));
                         getWorld().sendMessage(new CompletionTaskMessage(message.getOrigin(),
                                 partnerMessage.getOrigin(),
                                 partnerMessage.getTaskToComplete(),
                                 partnerTaskTimer.getWaitingTime(),
-                                partnerTaskTimer.getExpectedDuration()
+                                partnerTaskTimer.getExpectedDuration(),
+                                range
                         ));
 
                         queue.remove(message);

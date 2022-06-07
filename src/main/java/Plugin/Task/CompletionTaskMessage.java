@@ -17,12 +17,13 @@ public class CompletionTaskMessage implements DirectedMessage, LocalMessage {
     private TaskType completedTask;
 
     public CompletionTaskMessage(Entity origin, Entity target, TaskType completedTask,
-                                 int executionTime, double individualDuration) {
+                                 int executionTime, double individualDuration, int range) {
         this.origin = origin;
         this.target = target;
         this.completedTask = completedTask;
         this.executionTime = executionTime;
         this.individualDuration = individualDuration;
+        this.maxRange = range;
         originPosition = new Point(origin.getPosition().getX(), origin.getPosition().getY());
     }
 

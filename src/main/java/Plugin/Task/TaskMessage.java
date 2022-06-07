@@ -11,15 +11,16 @@ import java.util.ArrayList;
 public class TaskMessage implements LocalMessage, DirectedMessage {
     private Entity origin;
     private Entity target;
-    private int maxRange = 1;
+    private int maxRange;
     private Point originPosition;
 
     private TaskType taskToComplete;
     private TaskType taskToPerform;
 
-    public TaskMessage(Entity origin, Entity target, String messageContent) {
+    public TaskMessage(Entity origin, Task target, String messageContent) {
         this.origin = origin;
         this.target = target;
+        this.maxRange = target.getRange();
         originPosition = new Point(origin.getPosition().getX(), origin.getPosition().getY());
         fromString(messageContent);
     }
