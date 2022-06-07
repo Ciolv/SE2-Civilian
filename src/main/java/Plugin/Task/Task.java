@@ -26,6 +26,16 @@ public class Task extends StaticEntity {
         }
         this.duration = duration;
         this.range = range;
+
+        CivilianPlugin.logger.info(String.format(
+                "Created %s '%s' (uid:'%d') located at (%d|%d) with range %d.",
+                this.getClass().getSimpleName(),
+                this.taskType.value,
+                getUID(),
+                getPosition().getX(),
+                getPosition().getY(),
+                this.range
+        ));
     }
 
     public int getRange() { return range; }

@@ -38,10 +38,12 @@ public abstract class Person extends Agent {
         addTaskList(taskList);
 
         CivilianPlugin.logger.info(String.format(
-                "%s (%s, uid:'%d') entered the airport.",
+                "%s (%s, uid:'%d') entered the airport at (%d|%d).",
                 name,
                 this.getClass().getSimpleName(),
-                getUID()
+                getUID(),
+                getPosition().getX(),
+                getPosition().getY()
         ));
     }
 
