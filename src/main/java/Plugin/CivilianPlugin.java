@@ -48,8 +48,10 @@ public class CivilianPlugin implements Plugin {
             // Register Task
             registerEntity(this, Task.class.getSimpleName(),Task.class, new ConfigurableAttribute[] {
                     new ConfigurableAttribute("taskType", String.class),
-                    new ConfigurableAttribute("duration", Integer.class)
+                    new ConfigurableAttribute("duration", Integer.class),
+                    new ConfigurableAttribute("range", Integer.class, 1)
             });
+            logger.info(String.format("Registered entity %s", Task.class.getSimpleName()));
         } catch (ConfigurationFormatException e) {
             throw new RuntimeException(e);
         }

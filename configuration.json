@@ -1,162 +1,151 @@
 {
-	"seed": 0,
-	"width": 500,
-	"height": 500,
-	"placedEntities": [
-		{
-			"type": "Civilian",
-			"position": [
-				14,
-				13
-			],
-			"generates": [],
-			"width": 0,
-			"height": 0,
-			"pluginAttributes": {
-				"name": "Alena",
-				"tasks": [
-					"Ask for direction",
-					"Buy ticket"
-				]
-			}
-		},
-		{
-			"type": "TerminalWorker",
-			"position": [
-				14,
-				13
-			],
-			"generates": [],
-			"width": 0,
-			"height": 0,
-			"pluginAttributes": {
-				"name": "Lili",
-				"tasks": [
-					"Tell direction"
-				]
-			}
-		},
-		{
-			"type": "TerminalWorker",
-			"position": [
-				100,
-				70
-			],
-			"generates": [],
-			"width": 0,
-			"height": 0,
-			"pluginAttributes": {
-				"name": "Berd",
-				"tasks": [
-					"Sell ticket"
-				]
-			}
-		},
-		{
-			"type": "CleaningWorker",
-			"position": [
-				14,
-				13
-			],
-			"generates": [],
-			"width": 0,
-			"height": 0,
-			"pluginAttributes": {
-				"name": "Bob",
-				"tasks": [
-					"Clean"
-				]
-			}
-		},
-		{
-			"type": "CleaningWorker",
-			"position": [
-				14,
-				13
-			],
-			"generates": [],
-			"width": 0,
-			"height": 0,
-			"pluginAttributes": {
-				"name": "Allan",
-				"tasks": [
-					"Clean"
-				]
-			}
-		},
-		{
-			"type": "LuggageDistributor",
-			"position": [
-				14,
-				13
-			],
-			"generates": [],
-			"width": 0,
-			"height": 0,
-			"pluginAttributes": {
-				"name": "Annie",
-				"tasks": [
-					"Transport luggage"
-				]
-			}
-		},
-		{
-			"type": "Task",
-			"position": [
-				20,
-				10
-			],
-			"generates": [],
-			"width": 0,
-			"height": 0,
-			"pluginAttributes": {
-				"taskType": "Ask for direction",
-				"duration": 1
-			}
-		},
-		{
-			"type": "Task",
-			"position": [
-				90,
-				70
-			],
-			"generates": [],
-			"width": 0,
-			"height": 0,
-			"pluginAttributes": {
-				"taskType": "Sell ticket",
-				"duration": 1
-			}
-		},
-		{
-
-			"type": "Task",
-			"position": [
-				40,
-				10
-			],
-			"generates": [],
-			"width": 0,
-			"height": 0,
-			"pluginAttributes": {
-				"taskType": "Clean",
-				"duration": 1
-			}
-		},
-		{
-
-			"type": "Task",
-			"position": [
-				5,
-				7
-			],
-			"generates": [],
-			"width": 0,
-			"height": 0,
-			"pluginAttributes": {
-				"taskType": "Transport luggage",
-				"duration": 1
-			}
-		}
-	]
+    "seed": 0,
+    "width": 50,
+    "height": 50,
+    "placedEntities": [
+        {
+            "type": "Civilian",
+            "position": [
+                10,
+                10
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "name": "Alena",
+                "tasks": [
+                    "Ask for direction",
+                    "Buy ticket",
+                    "Request boarding"
+                ],
+                "characteristics": [
+                    "SUSPICIOUS",
+                    "CONFUSED",
+                    "SLOW"
+                ]
+            }
+        },
+        {
+            "type": "TerminalWorker",
+            "position": [
+                10,
+                10
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "name": "Hildegard",
+                "tasks": [
+                    "Tell direction"
+                ]
+            }
+        },
+        {
+            "type": "TerminalWorker",
+            "position": [
+                20,
+                20
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "name": "Hubert",
+                "tasks": [
+                    "Sell ticket"
+                ]
+            }
+        },
+        {
+            "type": "TerminalWorker",
+            "position": [
+                30,
+                30
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "name": "Lili",
+                "tasks": [
+                  "Perform boarding"
+                ]
+            }
+        },
+        {
+            "type": "CleaningWorker",
+            "position": [
+                42,
+                10
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "name": "Heinrich",
+                "tasks": [
+                    "Clean"
+                ]
+            }
+        },
+        {
+            "type": "Task",
+            "position": [
+                10,
+                10
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "taskType": "Tell direction",
+                "duration": 2,
+				"range": 10
+            }
+        },
+        {
+            "type": "Task",
+            "position": [
+                20,
+                20
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "taskType": "Sell ticket",
+                "duration": 2
+            }
+        },
+        {
+            "type": "Task",
+            "position": [
+                30,
+                30
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "taskType": "Perform boarding",
+                "duration": 2
+            }
+        },
+        {
+            "type": "Task",
+            "position": [
+                42,
+                10
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "taskType": "Clean",
+                "duration": 5
+            }
+        }
+    ]
 }
