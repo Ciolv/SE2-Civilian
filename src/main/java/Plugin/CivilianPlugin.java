@@ -16,6 +16,8 @@ import static dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.A
  */
 public class CivilianPlugin implements Plugin {
     public static PluginLogger logger;
+    private static int expectedRounds = 0;
+    private static int actualRounds = 0;
 
     /**
      * Perform all steps to make this plugin usable
@@ -69,5 +71,26 @@ public class CivilianPlugin implements Plugin {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    /**
+     * Add information to the efficiency calculation
+     *
+     * @param expectedTime The amount of rounds expected to complete the task
+     * @param actualTime The actual amount of rounds to complete the task
+     */
+    public static void addTaskCompletionTime(int expectedTime, int actualTime) {
+        expectedRounds += expectedTime;
+        actualRounds += actualTime;
+
+        logEfficiency();
+    }
+
+    /**
+     * Log the current efficiency score
+     */
+    private static void logEfficiency() {
+        double efficiency = actualRounds / expectedRounds;
+        logger.info(String.format("%s efficiency score: %.2f", CivilianPlugin.class.getSimpleName(), efficiency));
     }
 }
