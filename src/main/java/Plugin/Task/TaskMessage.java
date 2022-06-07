@@ -16,8 +16,13 @@ public class TaskMessage implements LocalMessage, DirectedMessage {
 
     private TaskType taskToComplete;
     private TaskType taskToPerform;
+    private String additionalInformation;
 
     public TaskMessage(Entity origin, Task target, String messageContent) {
+        this(origin, target, messageContent, "");
+    }
+
+    public TaskMessage(Entity origin, Task target, String messageContent, String additionalInformation) {
         this.origin = origin;
         this.target = target;
         this.maxRange = target.getRange();
@@ -47,6 +52,8 @@ public class TaskMessage implements LocalMessage, DirectedMessage {
     public Point getOriginPosition() {
         return originPosition;
     }
+
+    public String getAdditionalInformation() { return additionalInformation; }
 
     @Override
     public String toString() {

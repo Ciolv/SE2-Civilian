@@ -11,15 +11,14 @@ import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulati
 import dhbw.sose2022.softwareengineering.airportagentsim.simulation.api.simulation.message.Message;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public abstract class Person extends Agent {
-    private String name;
+    protected String name;
     private Characteristic[] characteristics;
-    private double individualSpeed = 1;
-    private List<TaskType> tasks = new ArrayList<>();
+    protected double individualSpeed = 1;
+    protected List<TaskType> tasks = new ArrayList<>();
     protected TaskType[] taskTypes;
-    private boolean isEnqueued = false;
+    protected boolean isEnqueued = false;
     private boolean removed = false;
     private ArrayList<Message> knownMessages = new ArrayList<>();
 
@@ -46,7 +45,6 @@ public abstract class Person extends Agent {
                 getPosition().getY()
         ));
     }
-
 
     public String getName() {
         return name;
@@ -242,7 +240,7 @@ public abstract class Person extends Agent {
      * @param target The {@link Entity} that shall be the message's target
      * @param message The message that shall be delivered.
      */
-    private void sendTaskMessage(Task target, String message) {
+    protected void sendTaskMessage(Task target, String message) {
         if(this.getPosition().getDistance(target.getPosition()) <= target.getRange()){
             TaskMessage pMessage =  new TaskMessage(this, target, message);
             getWorld().sendMessage(pMessage);
@@ -322,7 +320,7 @@ public abstract class Person extends Agent {
      * @param taskType {@link TaskType} of {@link Task} that has been completed
      * @param executionTime Time in rounds that the execution needed
      */
-    private void taskCompleted(TaskType taskType, int executionTime, int individualDuration) {
+    protected void taskCompleted(TaskType taskType, int executionTime, int individualDuration) {
         // Only do anything, if there is a task left in the que and the top one matches the TaskType
         if (tasks.size() != 0 && taskType == TaskType.getMatchingTask(tasks.get(0))) {
 
