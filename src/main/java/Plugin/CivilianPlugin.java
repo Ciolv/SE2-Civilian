@@ -51,6 +51,7 @@ public class CivilianPlugin implements Plugin {
                     new ConfigurableAttribute("duration", Integer.class),
                     new ConfigurableAttribute("range", Integer.class, 1)
             });
+            logger.info(String.format("Registered entity %s", Task.class.getSimpleName()));
         } catch (ConfigurationFormatException e) {
             throw new RuntimeException(e);
         }
