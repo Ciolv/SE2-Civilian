@@ -7,7 +7,9 @@ public enum TaskType {
     BUY_TICKET("Buy ticket"),
     SELL_TICKET("Sell ticket"),
     ASK_FOR_DIRECTION("Ask for direction"),
-    TELL_DIRECTION("Tell direction");
+    TELL_DIRECTION("Tell direction"),
+    REQUEST_BOARDING("Request boarding"),
+    PERFORM_BOARDING("Perform boarding");
 
     public String value;
     TaskType(String value){
@@ -74,6 +76,12 @@ public enum TaskType {
             }
             case TRANSPORTING_LUGGAGE -> {
                 return TRANSPORTING_LUGGAGE;
+            }
+            case PERFORM_BOARDING -> {
+                return REQUEST_BOARDING;
+            }
+            case REQUEST_BOARDING -> {
+                return PERFORM_BOARDING;
             }
             default -> {
                 return null;

@@ -10,7 +10,8 @@ public class Civilian extends Person {
     public Civilian(String name, String[] tasks, String[] characteristics) {
         super(name, new TaskType[] {
                 TaskType.ASK_FOR_DIRECTION,
-                TaskType.BUY_TICKET
+                TaskType.BUY_TICKET,
+                TaskType.REQUEST_BOARDING
         }, tasks, characteristics);
 
         throwLuggageDice();
