@@ -320,6 +320,10 @@ public abstract class Person extends Agent {
                 CivilianPlugin.logger.info(
                         String.format("%s has finished the task '%s' in %d rounds. Expected %d rounds.",
                                 name, tasks.get(0).value, executionTime, individualDuration));
+
+                // Self-serving tasks should not contribute to the efficiency score
+                // They would distort the actual efficiency, due to the fact, that their efficiency always is 1
+                CivilianPlugin.addTaskCompletionTime(individualDuration, executionTime);
             } else {
                 CivilianPlugin.logger.debug(
                         String.format("%s has finished the task '%s' in %d rounds. Expected %d rounds.",
