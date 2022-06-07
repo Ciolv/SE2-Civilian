@@ -9,7 +9,11 @@ public enum TaskType {
     ASK_FOR_DIRECTION("Ask for direction"),
     TELL_DIRECTION("Tell direction"),
     REQUEST_BOARDING("Request boarding"),
-    PERFORM_BOARDING("Perform boarding");
+    PERFORM_BOARDING("Perform boarding"),
+    DROP_LUGGAGE("Drop luggage"),
+    TAKE_LUGGAGE("Take luggage"),
+    REQUEST_SECURITY_CHECK("Request security check"),
+    PERFORM_SECURITY_CHECK("Perform security check");
 
     public String value;
     TaskType(String value){
@@ -82,6 +86,12 @@ public enum TaskType {
             }
             case REQUEST_BOARDING -> {
                 return PERFORM_BOARDING;
+            }
+            case DROP_LUGGAGE -> {
+                return TAKE_LUGGAGE;
+            }
+            case REQUEST_SECURITY_CHECK -> {
+                return PERFORM_SECURITY_CHECK;
             }
             default -> {
                 return null;

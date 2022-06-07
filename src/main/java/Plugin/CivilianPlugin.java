@@ -63,11 +63,22 @@ public class CivilianPlugin implements Plugin {
     private void registerPersonEntity(Class entityType) {
         if (entityType.getSuperclass() == Person.class) {
             try {
-                registerEntity(this, entityType.getSimpleName(), entityType, new ConfigurableAttribute[] {
-                        new ConfigurableAttribute("name", String.class),
-                        new ConfigurableAttribute("tasks", String[].class),
-                        new ConfigurableAttribute("characteristics", String[].class, new String[]{})
-                });
+                if (entityType.getSimpleName().equals(Civilian.class.getSimpleName())) {
+                    registerEntity(this, entityType.getSimpleName(), entityType, new ConfigurableAttribute[]{
+                            new ConfigurableAttribute("name", String.class),
+                            new ConfigurableAttribute("tasks", String[].class),
+                            new ConfigurableAttribute("characteristics", String[].class, new String[]{}),
+                            new ConfigurableAttribute("hasTicket", Boolean.class, false),
+                            new ConfigurableAttribute("hasLuggage", Boolean.class, false),
+                            new ConfigurableAttribute("idNumber", String.class)
+                    });
+                } else {
+                    registerEntity(this, entityType.getSimpleName(), entityType, new ConfigurableAttribute[]{
+                            new ConfigurableAttribute("name", String.class),
+                            new ConfigurableAttribute("tasks", String[].class),
+                            new ConfigurableAttribute("characteristics", String[].class, new String[]{})
+                    });
+                }
                 logger.info(String.format("Registered entity %s", entityType.getSimpleName()));
             } catch (ConfigurationFormatException e) {
                 throw new RuntimeException(e);

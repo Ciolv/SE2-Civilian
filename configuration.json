@@ -15,15 +15,19 @@
             "pluginAttributes": {
                 "name": "Alena",
                 "tasks": [
-                    "Ask for direction",
+                    "Request boarding",
+                    "Request security check",
                     "Buy ticket",
-                    "Request boarding"
+                    "Ask for direction"
                 ],
                 "characteristics": [
                     "SUSPICIOUS",
                     "CONFUSED",
                     "SLOW"
-                ]
+                ],
+				"idNumber": "yxoiyfhli",
+				"hasTicket": false,
+				"hasLuggage": false
             }
         },
         {
