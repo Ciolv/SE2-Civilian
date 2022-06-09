@@ -22,7 +22,8 @@ public class Civilian extends Person {
                 TaskType.ASK_FOR_DIRECTION,
                 TaskType.BUY_TICKET,
                 TaskType.REQUEST_BOARDING,
-                TaskType.DROP_LUGGAGE
+                TaskType.DROP_LUGGAGE,
+                TaskType.REQUEST_SECURITY_CHECK
         }, tasks, characteristics);
 
         this.hasTicket = hasTicket;

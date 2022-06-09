@@ -1,13 +1,13 @@
 {
     "seed": 0,
-    "width": 50,
-    "height": 50,
+    "width": 800,
+    "height": 500,
     "placedEntities": [
         {
             "type": "Civilian",
             "position": [
-                10,
-                10
+                3,
+                200
             ],
             "generates": [],
             "width": 0,
@@ -15,10 +15,10 @@
             "pluginAttributes": {
                 "name": "Alena",
                 "tasks": [
-                    "Request boarding",
-                    "Request security check",
+                    "Ask for direction",
                     "Buy ticket",
-                    "Ask for direction"
+                    "Request security check",
+                    "Request boarding"
                 ],
                 "characteristics": [
                     "SUSPICIOUS",
@@ -31,10 +31,432 @@
             }
         },
         {
+            "type": "Civilian",
+            "position": [
+                3,
+                200
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "name": "Stephanie",
+                "tasks": [
+                    "Ask for direction",
+                    "Drop luggage",
+                    "Request security check",
+                    "Request boarding"
+                ],
+                "idNumber": "byxfihnkl",
+                "hasTicket": true,
+                "hasLuggage": true
+            }
+        },
+        {
+            "type": "Civilian",
+            "position": [
+                3,
+                200
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "name": "Harry",
+                "tasks": [
+                    "Ask for direction",
+                    "Buy ticket",
+                    "Drop luggage",
+                    "Request security check",
+                    "Request boarding"
+                ],
+                "idNumber": "gnysdfydsg",
+                "hasTicket": false,
+                "hasLuggage": true
+            }
+        },
+        {
+            "type": "Civilian",
+            "position": [
+                3,
+                200
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "name": "Anna",
+                "tasks": [
+                    "Buy ticket",
+                    "Ask for direction",
+                    "Drop luggage",
+                    "Request security check",
+                    "Request boarding"
+                ],
+                "idNumber": "yjlaadf",
+                "hasTicket": false,
+                "hasLuggage": true
+            }
+        },
+        {
+            "type": "Civilian",
+            "position": [
+                3,
+                200
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "name": "Stephanie",
+                "tasks": [
+                    "Drop luggage",
+                    "Ask for direction",
+                    "Request security check",
+                    "Request boarding"
+                ],
+                "idNumber": "yxoiyfhli",
+                "hasTicket": true,
+                "hasLuggage": false
+            }
+        },
+        {
+            "type": "Civilian",
+            "position": [
+                3,
+                200
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "name": "Joseph",
+                "tasks": [
+                    "Buy ticket",
+                    "Ask for direction",
+                    "Request security check",
+                    "Request boarding"
+                ],
+                "idNumber": "dloyis",
+                "hasTicket": false,
+                "hasLuggage": false
+            }
+        },
+        {
+            "type": "Civilian",
+            "position": [
+                3,
+                200
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "name": "Charlie",
+                "tasks": [
+                    "Ask for direction",
+                    "Buy ticket",
+                    "Request security check",
+                    "Request boarding"
+                ],
+                "characteristics": [
+                    "SUSPICIOUS",
+                    "CONFUSED",
+                    "SLOW"
+                ],
+                "idNumber": "yxoiyfhli",
+                "hasTicket": false,
+                "hasLuggage": false
+            }
+        },
+        {
+            "type": "Civilian",
+            "position": [
+                3,
+                200
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "name": "Olivia",
+                "tasks": [
+                    "Ask for direction",
+                    "Drop luggage",
+                    "Request security check",
+                    "Request boarding"
+                ],
+                "idNumber": "byxfihnkl",
+                "hasTicket": true,
+                "hasLuggage": true
+            }
+        },
+        {
+            "type": "Civilian",
+            "position": [
+                3,
+                200
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "name": "Lauren",
+                "tasks": [
+                    "Ask for direction",
+                    "Buy ticket",
+                    "Drop luggage",
+                    "Request security check",
+                    "Request boarding"
+                ],
+                "idNumber": "gnysdfydsg",
+                "hasTicket": false,
+                "hasLuggage": true
+            }
+        },
+        {
+            "type": "Civilian",
+            "position": [
+                3,
+                200
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "name": "Nicole",
+                "tasks": [
+                    "Buy ticket",
+                    "Ask for direction",
+                    "Drop luggage",
+                    "Request security check",
+                    "Request boarding"
+                ],
+                "idNumber": "yjlaadf",
+                "hasTicket": false,
+                "hasLuggage": true
+            }
+        },
+        {
+            "type": "Civilian",
+            "position": [
+                3,
+                200
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "name": "Frank",
+                "tasks": [
+                    "Drop luggage",
+                    "Ask for direction",
+                    "Request security check",
+                    "Request boarding"
+                ],
+                "idNumber": "yxoiyfhli",
+                "hasTicket": true,
+                "hasLuggage": false
+            }
+        },
+        {
+            "type": "Civilian",
+            "position": [
+                3,
+                200
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "name": "Lily",
+                "tasks": [
+                    "Buy ticket",
+                    "Ask for direction",
+                    "Request security check",
+                    "Request boarding"
+                ],
+                "idNumber": "dloyis",
+                "hasTicket": false,
+                "hasLuggage": false
+            }
+        },
+        {
+            "type": "Civilian",
+            "position": [
+                3,
+                200
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "name": "Julie",
+                "tasks": [
+                    "Ask for direction",
+                    "Buy ticket",
+                    "Request security check",
+                    "Request boarding"
+                ],
+                "characteristics": [
+                    "SUSPICIOUS",
+                    "CONFUSED",
+                    "SLOW"
+                ],
+                "idNumber": "yxoiyfhli",
+                "hasTicket": false,
+                "hasLuggage": false
+            }
+        },
+        {
+            "type": "Civilian",
+            "position": [
+                3,
+                200
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "name": "Douglas",
+                "tasks": [
+                    "Ask for direction",
+                    "Drop luggage",
+                    "Request security check",
+                    "Request boarding"
+                ],
+                "idNumber": "byxfihnkl",
+                "hasTicket": true,
+                "hasLuggage": true
+            }
+        },
+        {
+            "type": "Civilian",
+            "position": [
+                3,
+                200
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "name": "Matthew",
+                "tasks": [
+                    "Ask for direction",
+                    "Buy ticket",
+                    "Drop luggage",
+                    "Request security check",
+                    "Request boarding"
+                ],
+                "idNumber": "gnysdfydsg",
+                "hasTicket": false,
+                "hasLuggage": true
+            }
+        },
+        {
+            "type": "Civilian",
+            "position": [
+                3,
+                200
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "name": "Benjamin",
+                "tasks": [
+                    "Buy ticket",
+                    "Ask for direction",
+                    "Drop luggage",
+                    "Request security check",
+                    "Request boarding"
+                ],
+                "idNumber": "yjlaadf",
+                "hasTicket": false,
+                "hasLuggage": true
+            }
+        },
+        {
+            "type": "Civilian",
+            "position": [
+                3,
+                200
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "name": "Ryan",
+                "tasks": [
+                    "Drop luggage",
+                    "Ask for direction",
+                    "Request security check",
+                    "Request boarding"
+                ],
+                "idNumber": "yxoiyfhli",
+                "hasTicket": true,
+                "hasLuggage": false
+            }
+        },
+        {
+            "type": "Civilian",
+            "position": [
+                3,
+                200
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "name": "Michelle",
+                "tasks": [
+                    "Buy ticket",
+                    "Ask for direction",
+                    "Request security check",
+                    "Request boarding"
+                ],
+                "idNumber": "dloyis",
+                "hasTicket": false,
+                "hasLuggage": false
+            }
+        },
+        {
             "type": "TerminalWorker",
             "position": [
                 10,
-                10
+                90
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "name": "Jonathan",
+                "tasks": [
+                    "Tell direction"
+                ]
+            }
+        },
+        {
+            "type": "TerminalWorker",
+            "position": [
+                10,
+                170
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "name": "Günther",
+                "tasks": [
+                    "Tell direction"
+                ]
+            }
+        },
+        {
+            "type": "TerminalWorker",
+            "position": [
+                10,
+                300
             ],
             "generates": [],
             "width": 0,
@@ -49,14 +471,14 @@
         {
             "type": "TerminalWorker",
             "position": [
-                20,
-                20
+                330,
+                110
             ],
             "generates": [],
             "width": 0,
             "height": 0,
             "pluginAttributes": {
-                "name": "Hubert",
+                "name": "Debra",
                 "tasks": [
                     "Sell ticket"
                 ]
@@ -65,16 +487,80 @@
         {
             "type": "TerminalWorker",
             "position": [
-                30,
-                30
+                330,
+                190
             ],
             "generates": [],
             "width": 0,
             "height": 0,
             "pluginAttributes": {
-                "name": "Lili",
+                "name": "Daniel",
                 "tasks": [
-                  "Perform boarding"
+                    "Sell ticket"
+                ]
+            }
+        },
+        {
+            "type": "TerminalWorker",
+            "position": [
+                330,
+                470
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "name": "Jeniffer",
+                "tasks": [
+                    "Sell ticket"
+                ]
+            }
+        },
+        {
+            "type": "TerminalWorker",
+            "position": [
+                690,
+                80
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "name": "Jonathan",
+                "tasks": [
+                    "Perform boarding"
+                ]
+            }
+        },
+        {
+            "type": "TerminalWorker",
+            "position": [
+                690,
+                200
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "name": "Günther",
+                "tasks": [
+                    "Perform boarding"
+                ]
+            }
+        },
+        {
+            "type": "TerminalWorker",
+            "position": [
+                690,
+                350
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "name": "Hildegard",
+                "tasks": [
+                    "Perform boarding"
                 ]
             }
         },
@@ -98,7 +584,7 @@
             "type": "Task",
             "position": [
                 10,
-                10
+                80
             ],
             "generates": [],
             "width": 0,
@@ -106,35 +592,214 @@
             "pluginAttributes": {
                 "taskType": "Tell direction",
                 "duration": 2,
-				"range": 10
+                "range": 10
             }
         },
         {
             "type": "Task",
             "position": [
-                20,
-                20
+                10,
+                225
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "taskType": "Tell direction",
+                "duration": 2,
+                "range": 10
+            }
+        },
+        {
+            "type": "Task",
+            "position": [
+                10,
+                350
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "taskType": "Tell direction",
+                "duration": 2,
+                "range": 10
+            }
+        },
+        {
+            "type": "Task",
+            "position": [
+                330,
+                80
             ],
             "generates": [],
             "width": 0,
             "height": 0,
             "pluginAttributes": {
                 "taskType": "Sell ticket",
+                "duration": 2,
+                "range": 3
+            }
+        },
+        {
+            "type": "Task",
+            "position": [
+                330,
+                225
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "taskType": "Sell ticket",
+                "duration": 2,
+                "range": 3
+            }
+        },
+        {
+            "type": "Task",
+            "position": [
+                330,
+                370
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "taskType": "Sell ticket",
+                "duration": 2,
+                "range": 3
+            }
+        },
+        {
+            "type": "Task",
+            "position": [
+                510,
+                80
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "taskType": "Perform security check",
                 "duration": 2
             }
         },
         {
             "type": "Task",
             "position": [
-                30,
-                30
+                510,
+                225
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "taskType": "Perform security check",
+                "duration": 2
+            }
+        },
+        {
+            "type": "Task",
+            "position": [
+                310,
+                370
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "taskType": "Perform security check",
+                "duration": 2
+            }
+        },
+        {
+            "type": "Task",
+            "position": [
+                180,
+                80
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "taskType": "Drop luggage",
+                "duration": 5,
+                "range": 10
+            }
+        },
+        {
+            "type": "Task",
+            "position": [
+                180,
+                225
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "taskType": "Drop luggage",
+                "duration": 5,
+                "range": 10
+            }
+        },
+        {
+            "type": "Task",
+            "position": [
+                180,
+                370
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "taskType": "Drop luggage",
+                "duration": 5,
+                "range": 10
+            }
+        },
+        {
+            "type": "Task",
+            "position": [
+                690,
+                80
             ],
             "generates": [],
             "width": 0,
             "height": 0,
             "pluginAttributes": {
                 "taskType": "Perform boarding",
-                "duration": 2
+                "duration": 2,
+                "range": 3
+            }
+        },
+        {
+            "type": "Task",
+            "position": [
+                690,
+                225
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "taskType": "Perform boarding",
+                "duration": 2,
+                "range": 3
+            }
+        },
+        {
+            "type": "Task",
+            "position": [
+                690,
+                370
+            ],
+            "generates": [],
+            "width": 0,
+            "height": 0,
+            "pluginAttributes": {
+                "taskType": "Perform boarding",
+                "duration": 2,
+                "range": 3
             }
         },
         {

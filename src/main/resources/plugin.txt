@@ -1,4 +1,4 @@
 id:85123587
 name:Civilians
-authors:DeineMammi
+authors:Akshaya, Gurleen, Irina, Jonas, Roman
 entrypoint:Plugin.CivilianPlugin
